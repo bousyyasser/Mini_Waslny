@@ -3,10 +3,13 @@
 
 void Graph::addCity(const string& city)
 {
-	
+
 	if (adjacencyList.find(city) == adjacencyList.end())
 	{
-		adjacencyList[city] = vector<Edge>();
+		adjacencyList[city] = list<Edge>();
+
+		if(!isUndo)
+		undoStack.push({ AddCity,city });
 	}
 }
 
@@ -15,83 +18,98 @@ void Graph::addEdge(const string& source, const string& destination, int distanc
 	addCity(source);
 	addCity(destination);
 
-	bool exists = false; 
-
-	for (const Edge& edge : adjacencyList[source])
-	{
-		if (edge.destination == destination)
-		{
-			exists = true;
-			break;
-		}
-	}
-
-	if (!exists)
+	if (!EdgeExists(source,destination))
 	{
 		adjacencyList[source].push_back(Edge(destination, distance));
 		adjacencyList[destination].push_back(Edge(source, distance));
+
+		if(!isUndo)
+		undoStack.push({ AddEdge,source,destination,distance });
 	}
 }
 
 void Graph::deleteEdge(const string& source, const string& destination)
 {
-	if (!EdgeExists(source, destination)) return;
-
-
-		auto& sourceEdges = adjacencyList[source];
-		for (auto it = sourceEdges.begin(); it != sourceEdges.end(); )
+	if (!EdgeExists(source, destination))
+	{
+		return;
+	}
+	int dist = -1;
+	for (const auto& edge : adjacencyList[source])
+	{
+		if (edge.destination == destination)
 		{
-			if (it->destination == destination)
-			{
-				it = sourceEdges.erase(it);
-			}
-			else
-				++it;
+			dist = edge.distance;
 		}
+	}
+
+
+	auto& sourceEdges = adjacencyList[source];
+	for (auto it = sourceEdges.begin(); it != sourceEdges.end(); )
+	{
+		if (it->destination == destination)
+		{
+			it = sourceEdges.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 
 		auto& destEdges = adjacencyList[destination];
 		for (auto it = destEdges.begin(); it != destEdges.end(); )
 		{
 			if (it->destination == source)
+			{
 				it = destEdges.erase(it);
+			}
 			else
+			{
 				++it;
+			}
 		}
-	
 
+	if(!isUndo)
+	undoStack.push({ DeleteEdge,source,destination,dist });
 }
 
 void Graph::deleteCity(const string& cityToDelete)
 {
-	
-	if (!cityExists(cityToDelete)) return;
 
+	if (!cityExists(cityToDelete))
+	{
+		return;
+	}
 
-		
-		for (auto& items : adjacencyList)
+	list<Edge>EdgesConnected = adjacencyList[cityToDelete];
+
+	for (auto& items : adjacencyList)
+	{
+		const string& connectedCity = items.first;
+
+		if (connectedCity != cityToDelete)
 		{
-			const string& connectedCity = items.first;
-			
-			if (connectedCity != cityToDelete)
+			auto& edges = items.second;
+			for (auto it = edges.begin(); it != edges.end(); )
 			{
-				auto& edges = items.second;
-				for (auto it = edges.begin(); it != edges.end(); )
+				if (it->destination == cityToDelete)
 				{
-					if (it->destination == cityToDelete)
-					{
-						it = edges.erase(it);
-					}
-					else
-					{
-						++it;
-					}
+					it = edges.erase(it);
+				}
+				else
+				{
+					++it;
 				}
 			}
-
 		}
-		//after deleting edges->delete the city
-		adjacencyList.erase(cityToDelete);
 
+	}
+	//after deleting edges->delete the city
+	adjacencyList.erase(cityToDelete);
+
+	if(!isUndo)
+	undoStack.push({ DeleteCity,cityToDelete,"",0,EdgesConnected });
 }
 
 
@@ -120,8 +138,50 @@ bool Graph::EdgeExists(const string& source, const string& dest)
 	return false;
 }
 
-
-void Graph::displayGraph() 
+unordered_map<string, list<Edge>>& Graph::getAdjacencyList()
 {
-	
+	return adjacencyList;
 }
+
+
+void Graph::undo()
+{
+	if (isUndoEmpty())
+	{
+		return;
+	}
+
+	isUndo = true;
+	LastOperation lastOp = undoStack.top();
+	undoStack.pop();
+	
+
+	if (lastOp.type == AddCity)
+	{
+		deleteCity(lastOp.source);
+	}
+	else if (lastOp.type == DeleteCity)
+	{
+		addCity(lastOp.source);
+		for (const auto& edge : lastOp.cityEdges)
+		{
+			adjacencyList[lastOp.source].push_back(Edge(lastOp.destination, lastOp.distance));
+			adjacencyList[lastOp.destination].push_back(Edge(lastOp.source, lastOp.distance));
+
+		}
+	}
+	else if (lastOp.type == AddEdge)
+	{
+		deleteEdge(lastOp.source, lastOp.destination);
+	}
+	else if (lastOp.type == DeleteEdge)
+	{
+		addEdge(lastOp.source, lastOp.destination, lastOp.distance);
+	}
+	isUndo = false;
+}
+bool Graph::isUndoEmpty()
+{
+	return (!undoStack.size());
+}
+

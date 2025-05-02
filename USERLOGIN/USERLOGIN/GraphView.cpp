@@ -2,7 +2,9 @@
 
 GraphView::GraphView(QWidget *parent)
 	: QGraphicsView(parent)
-{}
+{
+	 
+}
 
 void GraphView::mousePressEvent(QMouseEvent* event)
 {

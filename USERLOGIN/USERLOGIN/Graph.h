@@ -4,30 +4,46 @@
 #include <unordered_map>
 #include <vector>
 #include <stack>
+#include <list>
 #include "Edge.h"
 
 
 using namespace std;
 
+enum operationType { AddCity, DeleteCity, AddEdge, DeleteEdge };
+struct LastOperation
+{
+	operationType type;
+	string source;
+	string destination;
+	int distance;
+	list<Edge>cityEdges;
+};
+
 class Graph
 {
 private:
-	unordered_map<string, vector<Edge>>adjacencyList;
+	unordered_map<string, list<Edge>>adjacencyList;
+	stack<LastOperation>undoStack;
+	bool isUndo = false;
+	
 
 
 public:
-	void addCity(const string&); //To add a new city
-	void addEdge(const string&, const string&, int);//add edge between cities
+	/**/
+	void addCity(const string&);
+	void addEdge(const string&, const string&, int);
+	void deleteEdge(const string&, const string&);
+	void deleteCity(const string&);
+	void undo();
 
-
-	void deleteEdge(const string&, const string&); //delete an edge between two cities
-	void deleteCity(const string&); //delete a city and all edges connected
-
-
+	/*Helper Methods*/
+	bool isUndoEmpty();
 	bool cityExists(const string&);
 	bool EdgeExists(const string&, const string&);
 
-	void displayGraph(); //normal displaying 
+	/*Get Graph*/
+	unordered_map<string, list<Edge>>& getAdjacencyList();
 
 
 };

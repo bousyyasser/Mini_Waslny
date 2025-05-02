@@ -83,11 +83,11 @@ int EdgeView::getDistance() const
 
 QString EdgeView::getSource() const
 {
-    return startNode->data(Qt::UserRole).toString();
+    return startNode->data(0).toString();
 }
 QString EdgeView::getDestination() const
 {
-    return endNode->data(Qt::UserRole).toString();
+    return endNode->data(0).toString();
 }
 EdgeView::~EdgeView()
 {

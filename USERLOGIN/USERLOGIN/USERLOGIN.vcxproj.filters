@@ -58,6 +58,12 @@
     <ClCompile Include="EdgeView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShortestPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphTraversal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="User.h">
@@ -67,6 +73,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShortestPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphTraversal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

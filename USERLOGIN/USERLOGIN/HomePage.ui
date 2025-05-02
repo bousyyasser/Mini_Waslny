@@ -232,6 +232,23 @@
        </rect>
       </property>
      </widget>
+     <widget class="QPushButton" name="undoButton">
+      <property name="geometry">
+       <rect>
+        <x>725</x>
+        <y>420</y>
+        <width>85</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Undo</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/undo.png</normaloff>images/undo.png</iconset>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
