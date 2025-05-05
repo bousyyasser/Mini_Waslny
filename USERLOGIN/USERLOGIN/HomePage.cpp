@@ -47,8 +47,6 @@ HomePage::HomePage(QString username, QWidget* parent)
     );
 }
 
-
-
 void HomePage::setupUI()
 {
     // Set left panel style
@@ -251,7 +249,7 @@ void HomePage::setupUI()
     ui.DFS_button->setStyleSheet(addDeleteButtonStyle);
     ui.BFS_button->setStyleSheet(addDeleteButtonStyle);
    
-    QLabel* traversalOutputLabel = new QLabel("Traversal Output");
+    traversalOutputLabel = new QLabel("Traversal Output");
     traversalOutputLabel->setStyleSheet(R"(
     font-family: 'Segoe UI', 'Arial';
     font-size: 16px;
@@ -260,7 +258,7 @@ void HomePage::setupUI()
    )");
 
     // Output display box
-    QTextEdit* traversalOutputDisplay = new QTextEdit();
+    traversalOutputDisplay = new QTextEdit();
     traversalOutputDisplay->setReadOnly(true);
     traversalOutputDisplay->setStyleSheet(R"(
     background-color: white;
@@ -1238,34 +1236,116 @@ void HomePage::updateAdjacencyListDisplay()
 /*Traverse Graph Handling*/
 void HomePage::onRunBFS()
 {
-    bool ok;
-    QString startNode = QInputDialog::getText(this, "Start Node for BFS",
-        "Enter starting node:",
-        QLineEdit::Normal, "", &ok);
 
-    if (ok && !startNode.isEmpty()) 
-    {
-     
-    }
-    else if (ok) 
-    {
-        QMessageBox::warning(this, "Invalid Input", "Start node cannot be empty.");
-    }
+        auto adjList = graph.getAdjacencyList();
+        if (adjList.empty()) {
+            showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
+            return;
+        }
+
+        QStringList cities;
+        for (const auto& cityPair : adjList) {
+            cities << QString::fromStdString(cityPair.first);
+        }
+
+        bool ok;
+        QString startCity = QInputDialog::getItem(this, "BFS Input", "Select start city:", cities, 0, false, &ok);
+        if (!ok || startCity.isEmpty()) {
+            showAlert("Error", "No start city selected!", QMessageBox::Warning);
+            return;
+        }
+
+        resetTraversalNodeColors(traverseScene);
+       
+        list<string> path = traversal->BFS(startCity.toStdString());
+        if (path.empty()) {
+            showAlert("No Path", "No path exists between the cities!", QMessageBox::Warning);
+            return;
+        }
+
+        QString result = "BFS Path: ";
+        for (const auto& city : path) {
+            QString qCity = QString::fromStdString(city);
+            result += qCity + " -> ";
+
+            highlightTraversalNode(qCity, traverseScene, QColor(173, 216, 230));
+        }
+        result.chop(4);
+
+        traversalOutputDisplay->setText(result);
+        resetTraversalNodeColors(traverseScene);
+  
 }
 void HomePage::onRunDFS()
 {
-    bool ok;
-    QString startNode = QInputDialog::getText(this, "Start Node for DFS",
-        "Enter starting node:",
-        QLineEdit::Normal, "", &ok);
-
-    if (ok && !startNode.isEmpty())
-    {
-      
+    auto adjList = graph.getAdjacencyList();
+    if (adjList.empty()) {
+        showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
+        return;
     }
-    else if (ok)
-    {
-        QMessageBox::warning(this, "Invalid Input", "Start node cannot be empty.");
+    QStringList cities;
+    for (const auto& cityPair : adjList) {
+        cities << QString::fromStdString(cityPair.first);
+    }
+    bool ok;
+    QString startCity = QInputDialog::getItem(this, "DFS Input", "Select start city:", cities, 0, false, &ok);
+    if (!ok || startCity.isEmpty()) {
+        showAlert("Error", "No city selected!", QMessageBox::Warning);
+        return;
+    }
+    resetTraversalNodeColors(traverseScene);
+
+    list<string> path = traversal->DFS(startCity.toStdString());
+    QString result = "DFS Traversal: ";
+    for (const auto& city : path) {
+        QString qCity = QString::fromStdString(city);
+        result += qCity + " -> ";
+
+        highlightTraversalNode(qCity, traverseScene, QColor(144, 238, 144));
+    }
+        result.chop(4);
+
+    traversalOutputDisplay->setText(result);
+    resetTraversalNodeColors(traverseScene);
+}
+void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor color)
+{
+    // node by name and highlight it
+    for (QGraphicsItem* item : scene->items()) {
+        QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
+        if (group && group->data(0).toString() == cityName) {
+            QList<QGraphicsItem*> children = group->childItems();
+            for (QGraphicsItem* child : children) {
+                QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
+                if (node) {
+                    node->setBrush(QBrush(color));
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    
+    QApplication::processEvents();
+    //delay
+   QThread::msleep(1500);
+}
+void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
+{
+    // Reset nodes to default
+    for (QGraphicsItem* item : scene->items()) {
+        QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
+        if (group) {
+            QList<QGraphicsItem*> children = group->childItems();
+            for (QGraphicsItem* child : children) {
+                QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
+                if (node) {
+                    node->setBrush(QBrush(Qt::lightGray));
+                    break;
+                }
+            }
+        }
     }
 }
 

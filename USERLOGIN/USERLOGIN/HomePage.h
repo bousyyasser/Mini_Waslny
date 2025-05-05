@@ -12,6 +12,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QTimer>
+#include <QThread>
 #include <QResizeEvent>
 #include "Graph.h"
 #include "EdgeView.h"
@@ -42,6 +43,7 @@ private slots:
     void onCanvasClicked(QPointF pos);
     void onRunDFS(); 
     void onRunBFS();
+
   
 
 
@@ -57,6 +59,8 @@ private:
     QMap<QString, QPointF> cityPositions;
     QTextEdit* adjacencyListDisplay;
     QLabel* adjacencyListLabel;
+    QTextEdit* traversalOutputDisplay;
+    QLabel* traversalOutputLabel;
     Graph graph;
     GraphTraversal* traversal;
 
@@ -70,6 +74,8 @@ private:
 
     // For edge drawing
     QGraphicsItemGroup* firstNode = nullptr;
+
+
 
     // Setup methods
     void setupUI();
@@ -102,5 +108,7 @@ private:
     void highlightNode(QGraphicsItemGroup* nodes, bool highlight);
     void highlightDeletedNode(QGraphicsItemGroup* nodes, bool highlight);
     void highlightEdge(EdgeView* edge, bool highlight);
+    void highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor color);
+    void resetTraversalNodeColors(QGraphicsScene* scene);
     void showAlert(const QString& title, const QString& message, QMessageBox::Icon icon);
 };

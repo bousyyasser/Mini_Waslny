@@ -39,50 +39,40 @@ list<string>GraphTraversal::DFS(const string& startCity)
 	return path;
 }
 
-list<string> GraphTraversal::BFS(const string& startCity, const string& endCity)
+list<string> GraphTraversal::BFS(const string& startCity)
 {
 
-	if (!graph.cityExists(startCity) || !graph.cityExists(endCity))
+	if (!graph.cityExists(startCity))
 	{
 		return {};
 	}
 	unordered_map<string, bool>visited;
-	unordered_map<string, string>parent;
 	queue<string>q;
+
+	list<string>path;
 
 	q.push(startCity);
 	visited[startCity] = true;
-	parent[startCity] = "";
+
 
 	while (!q.empty())
 	{
 		string node = q.front(); 
 		q.pop();
-
+		path.push_back(node);
 		const auto& neighbours = graph.getAdjacencyList().at(node);
 		for (const auto& edge : neighbours)
 		{
 			if (!visited[edge.destination])
 			{
 				visited[edge.destination] = true;
-				parent[edge.destination] = node;
 				q.push(edge.destination);
 			}
 		}
 	}
 
-	if (!visited[endCity])
-		return {};
 
-	list<string>path;
-	string current = endCity;
-	while (parent.find(current) != parent.end())
-	{
-		path.push_front(current);
-		current = parent[current];
-	}
-	
-	path.push_front(current);
+
 
 	return path;
 }

@@ -13,6 +13,6 @@ public:
 	GraphTraversal(Graph&);
 
 	list<string>DFS(const string& );
-	list<string> BFS(const string&,const string&);
+	list<string> BFS(const string&);
 };
 
