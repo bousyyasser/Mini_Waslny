@@ -84,9 +84,9 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>0</y>
+      <y>-20</y>
       <width>641</width>
-      <height>501</height>
+      <height>521</height>
      </rect>
     </property>
     <widget class="QWidget" name="HomePageWidget">
@@ -134,6 +134,64 @@
         <string/>
        </property>
       </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="TraverseWidget">
+     <widget class="QPushButton" name="back_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/back.png</normaloff>images/back.png</iconset>
+      </property>
+     </widget>
+     <widget class="GraphView" name="TraverseGraphView">
+      <property name="geometry">
+       <rect>
+        <x>-5</x>
+        <y>11</y>
+        <width>651</width>
+        <height>481</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="ShortestPathWidget">
+     <widget class="QPushButton" name="back_3">
+      <property name="geometry">
+       <rect>
+        <x>-10</x>
+        <y>0</y>
+        <width>101</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/back.png</normaloff>images/back.png</iconset>
+      </property>
+     </widget>
+     <widget class="GraphView" name="shortestPathGraphView">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>651</width>
+        <height>491</height>
+       </rect>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="addGraphWidget">

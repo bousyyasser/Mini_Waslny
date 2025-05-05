@@ -80,8 +80,8 @@ void HomePage::setupUI()
     ui.shortestPathButton->setStyleSheet(buttonStyle);
 
     // Style back button
-    ui.back->setStyleSheet(R"(
-        QPushButton {
+    QString backBtnsStyle = (R"(
+       QPushButton {
             background-color: transparent;
             border: none;
         }
@@ -92,6 +92,10 @@ void HomePage::setupUI()
             background-color: rgba(0, 0, 0, 0.1);
         }
     )");
+        
+    ui.back->setStyleSheet(backBtnsStyle);
+    ui.back_2->setStyleSheet(backBtnsStyle);
+    ui.back_3->setStyleSheet(backBtnsStyle);
 
     // Style logout button
     ui.logoutButton->setStyleSheet(R"(
@@ -249,6 +253,8 @@ void HomePage::setupUI()
    //initiate btns&graph scene
     setUpConnections();
     setUpGraphScene();
+    setupTraverseGraphScene();
+    setupShortestPathGraphScene();
 }
 void HomePage::setUpConnections()
 {
@@ -257,6 +263,8 @@ void HomePage::setUpConnections()
     connect(ui.traverseButton, &QPushButton::clicked, this, &HomePage::showTraversePage);
     connect(ui.shortestPathButton, &QPushButton::clicked, this, &HomePage::showShortestPathPage);
     connect(ui.back, &QPushButton::clicked, this, &HomePage::goBack);
+    connect(ui.back_2, &QPushButton::clicked, this, &HomePage::goBack);
+    connect(ui.back_3, &QPushButton::clicked, this, &HomePage::goBack);
     connect(ui.logoutButton, &QPushButton::clicked, this, &HomePage::logout);
   
     connect(ui.addCityBtn, &QPushButton::clicked, this, &HomePage::onAddCity);
@@ -273,29 +281,48 @@ void HomePage::setUpGraphScene()
     ui.graphView->setScene(scene);
     connect(ui.graphView, &GraphView::canvasClicked, this, &HomePage::onCanvasClicked);
 }
+void HomePage::setupTraverseGraphScene()
+{
+    traverseScene = new QGraphicsScene(this);
+    ui.TraverseGraphView->setScene(traverseScene);
+}
+void HomePage::setupShortestPathGraphScene()
+{
+   shortestPathScene = new QGraphicsScene(this);
+    ui.shortestPathGraphView->setScene(shortestPathScene);
+}
 
 
 void HomePage::showHomePage()
 {
     ui.leftPanel->setVisible(true);
-    ui.rightPanel->setCurrentIndex(0);
+    ui.rightPanel->setCurrentIndex(ui.rightPanel->indexOf(ui.HomePageWidget));
+    ui.back->raise();
 }
-
 void HomePage::showAddGraphPage()
 {
     ui.leftPanel->setVisible(false);
     ui.rightPanel->setGeometry(0, 0, this->width(), this->height());
-    ui.rightPanel->setCurrentIndex(1);
+    ui.rightPanel->setCurrentIndex(ui.rightPanel->indexOf(ui.addGraphWidget));
+    ui.back->show();
 }
-
 void HomePage::showTraversePage()
 {
-    ui.rightPanel->setCurrentIndex(2);
+    updateTraverseGraphScene();
+    ui.leftPanel->setVisible(false);
+    ui.rightPanel->setGeometry(0, 0, this->width(), this->height());
+    ui.rightPanel->setCurrentIndex(ui.rightPanel->indexOf(ui.TraverseWidget));
+    ui.back_2->show();
+    ui.back_2->raise();
 }
-
 void HomePage::showShortestPathPage()
 {
-    ui.rightPanel->setCurrentIndex(3);
+    updateShortestPathGraphScene();
+    ui.leftPanel->setVisible(false);
+    ui.rightPanel->setGeometry(0, 0, this->width(), this->height());
+    ui.rightPanel->setCurrentIndex(ui.rightPanel->indexOf(ui.ShortestPathWidget));
+    ui.back_3->show();
+    ui.back_3->raise();
 }
 
 
@@ -304,7 +331,8 @@ void HomePage::goBack()
 {
     ui.leftPanel->setVisible(true);
     ui.rightPanel->setGeometry(ui.leftPanel->width(), 0, this->width() - ui.leftPanel->width(), this->height());
-    ui.rightPanel->setCurrentIndex(0);
+    ui.rightPanel->setCurrentIndex(ui.rightPanel->indexOf(ui.HomePageWidget));
+
 }
 
 
@@ -587,6 +615,117 @@ void HomePage::updateGraphScene()
     }
 
     updateAdjacencyListDisplay();
+}
+void HomePage::layoutNodesCircular(QGraphicsScene* targetScene,
+    const unordered_map<string,list<Edge>>& adjacencyList,
+    QMap<QString, QGraphicsItemGroup*>& cityNodesMap,
+    QMap<QString, QPointF>& cityPositions)
+{
+    targetScene->clear();
+    cityNodesMap.clear();
+
+    int n = adjacencyList.size();
+    if (n == 0) return;
+
+    int radius = 200;
+    QPointF center(400, 300); 
+    int i = 0;
+
+    for (const auto& cityPair : adjacencyList)
+    {
+        QString qcityName = QString::fromStdString(cityPair.first);
+
+        qreal angle = (2 * M_PI * i) / n;
+        qreal x = center.x() + radius * cos(angle);
+        qreal y = center.y() + radius * sin(angle);
+        i++;
+
+        QPointF pos(x, y);
+        cityPositions[qcityName] = pos;
+
+        QGraphicsEllipseItem* node = targetScene->addEllipse(0, 0, 40, 40, QPen(Qt::black), QBrush(Qt::lightGray));
+        QGraphicsTextItem* label = targetScene->addText(qcityName);
+        QFont font = label->font();
+        font.setBold(true);
+        label->setFont(font);
+        QRectF textRect = label->boundingRect();
+        label->setPos(20 - textRect.width() / 2, 20 - textRect.height() / 2);
+
+        QGraphicsItemGroup* group = targetScene->createItemGroup({ node, label });
+        group->setFlag(QGraphicsItem::ItemIsSelectable);
+        group->setData(0, qcityName);
+        group->setPos(pos);
+
+        cityNodesMap[qcityName] = group;
+    }
+}
+void HomePage::updateTraverseGraphScene()
+{
+    traverseScene->clear();
+    traverseEdges.clear();
+
+    const auto& adjacencyList = graph.getAdjacencyList();
+    QMap<QString, QGraphicsItemGroup*> cityNodesMapTemp;
+
+    layoutNodesCircular(traverseScene, adjacencyList, cityNodesMapTemp, cityPositions);
+
+    for (const auto& cityPair : adjacencyList)
+    {
+        const string& source = cityPair.first;
+        QString qsource = QString::fromStdString(source);
+
+        for (const Edge& edge : cityPair.second)
+        {
+            const string& dest = edge.destination;
+            QString qdest = QString::fromStdString(dest);
+
+            if (qsource < qdest)
+            {
+                QGraphicsItemGroup* sourceNode = cityNodesMapTemp.value(qsource, nullptr);
+                QGraphicsItemGroup* destNode = cityNodesMapTemp.value(qdest, nullptr);
+
+                if (sourceNode && destNode)
+                {
+                    EdgeView* edgeView = new EdgeView(sourceNode, destNode, traverseScene, edge.distance);
+                    traverseEdges.append(edgeView);
+                }
+            }
+        }
+    }
+}
+void HomePage::updateShortestPathGraphScene()
+{
+    shortestPathScene->clear();
+    shortestPathEdges.clear();
+
+    const auto& adjacencyList = graph.getAdjacencyList();
+    QMap<QString, QGraphicsItemGroup*> cityNodesMapTemp;
+
+    layoutNodesCircular(shortestPathScene, adjacencyList, cityNodesMapTemp, cityPositions);
+
+    for (const auto& cityPair : adjacencyList)
+    {
+        const string& source = cityPair.first;
+        QString qsource = QString::fromStdString(source);
+
+        for (const Edge& edge : cityPair.second)
+        {
+            const string& dest = edge.destination;
+            QString qdest = QString::fromStdString(dest);
+
+            if (qsource < qdest)
+            {
+                QGraphicsItemGroup* sourceNode = cityNodesMapTemp.value(qsource, nullptr);
+                QGraphicsItemGroup* destNode = cityNodesMapTemp.value(qdest, nullptr);
+
+                if (sourceNode && destNode)
+                {
+                    EdgeView* edgeView = new EdgeView(sourceNode, destNode, shortestPathScene, edge.distance);
+                    shortestPathEdges.append(edgeView);
+                }
+            }
+        }
+    }
 }
 
 /*visualization add graph logic*/

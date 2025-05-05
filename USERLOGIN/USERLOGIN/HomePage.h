@@ -11,6 +11,8 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QRadioButton>
+#include <QTimer>
+#include <QResizeEvent>
 #include "Graph.h"
 #include "EdgeView.h"
 
@@ -37,15 +39,22 @@ private slots:
     void onDeleteEdge();
     void onUndo();
     void onCanvasClicked(QPointF pos);
+  
+
+
 
 private:
     Ui::HomePageClass ui;
     QGraphicsScene* scene;
-    Graph graph;
+    QGraphicsScene* traverseScene;
+    QGraphicsScene* shortestPathScene;
+    QList<EdgeView*>traverseEdges;
+    QList<EdgeView*>shortestPathEdges;
     QList<EdgeView*> edges;
     QMap<QString, QPointF> cityPositions;
     QTextEdit* adjacencyListDisplay;
     QLabel* adjacencyListLabel;
+    Graph graph;
 
 
     // State flags
@@ -60,9 +69,21 @@ private:
 
     // Setup methods
     void setupUI();
-    void setupGraphTypeOption();
+
     void setUpConnections();
     void setUpGraphScene();
+
+
+    void setupTraverseGraphScene();
+    void setupShortestPathGraphScene();
+    void updateTraverseGraphScene();
+    void updateShortestPathGraphScene();
+    void layoutNodesCircular(QGraphicsScene* targetScene,
+        const unordered_map<string,list<Edge>>& adjacencyList,
+        QMap<QString, QGraphicsItemGroup*>& cityNodesMap,
+        QMap<QString, QPointF>& cityPositions);
+  
+  
 
     // Helper methods
     void handleAddCity(QPointF pos);
