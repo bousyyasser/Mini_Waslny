@@ -15,6 +15,7 @@
 #include <QResizeEvent>
 #include "Graph.h"
 #include "EdgeView.h"
+#include"GraphTraversal.h"
 
 class HomePage : public QMainWindow
 {
@@ -39,6 +40,8 @@ private slots:
     void onDeleteEdge();
     void onUndo();
     void onCanvasClicked(QPointF pos);
+    void onRunDFS(); 
+    void onRunBFS();
   
 
 
@@ -55,6 +58,7 @@ private:
     QTextEdit* adjacencyListDisplay;
     QLabel* adjacencyListLabel;
     Graph graph;
+    GraphTraversal* traversal;
 
 
     // State flags

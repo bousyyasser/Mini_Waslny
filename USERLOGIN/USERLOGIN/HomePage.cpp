@@ -3,11 +3,13 @@
 #include "GraphView.h"
 #include "Graph.h"
 #include "EdgeView.h"
+#include "GraphTraversal.h"
 
 HomePage::HomePage(QString username, QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+    traversal = new GraphTraversal(graph);
     setupUI();
 
 
@@ -243,9 +245,59 @@ void HomePage::setupUI()
    
     graphPageLayout->setContentsMargins(10, 10, 10, 10);
     graphPageLayout->setSpacing(15);
+    ui.addGraphWidget->setLayout(graphPageLayout);
+
+    //Graph Traversal 
+    ui.DFS_button->setStyleSheet(addDeleteButtonStyle);
+    ui.BFS_button->setStyleSheet(addDeleteButtonStyle);
+   
+    QLabel* traversalOutputLabel = new QLabel("Traversal Output");
+    traversalOutputLabel->setStyleSheet(R"(
+    font-family: 'Segoe UI', 'Arial';
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+   )");
+
+    // Output display box
+    QTextEdit* traversalOutputDisplay = new QTextEdit();
+    traversalOutputDisplay->setReadOnly(true);
+    traversalOutputDisplay->setStyleSheet(R"(
+    background-color: white;
+    border: 2px solid #d1d1d1;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    color: #333333;
+   )");
+    traversalOutputDisplay->setMinimumHeight(200);
+    traversalOutputDisplay->setMinimumWidth(250);
+
+    QVBoxLayout* traversalGraphViewLayout = new QVBoxLayout();
+    traversalGraphViewLayout->addWidget(ui.TraverseGraphView); 
+
+    // Right side layout (buttons and output)
+    QVBoxLayout* traversalRightLayout = new QVBoxLayout();
+    traversalRightLayout->addWidget(traversalOutputLabel);
+    traversalRightLayout->addWidget(traversalOutputDisplay);
+
+    QHBoxLayout* traversalButtonLayout = new QHBoxLayout();
+    traversalButtonLayout->addWidget(ui.DFS_button);
+    traversalButtonLayout->addWidget(ui.BFS_button);
+    traversalRightLayout->addLayout(traversalButtonLayout);
+
+    traversalRightLayout->addStretch();
 
     
-    ui.addGraphWidget->setLayout(graphPageLayout);
+    QHBoxLayout* traversalPageLayout = new QHBoxLayout(ui.TraverseWidget);
+    traversalPageLayout->addLayout(traversalGraphViewLayout, 1); // stretch factor = 1
+    traversalPageLayout->addLayout(traversalRightLayout);
+
+    traversalPageLayout->setContentsMargins(10, 10, 10, 10);
+    traversalPageLayout->setSpacing(15);
+    ui.TraverseWidget->setLayout(traversalPageLayout);
+
 
     //back button on top
     ui.back->raise();
@@ -272,6 +324,9 @@ void HomePage::setUpConnections()
     connect(ui.deleteCityBtn, &QPushButton::clicked, this, &HomePage::onDeleteCity);
     connect(ui.deleteEdgeBtn, &QPushButton::clicked, this, &HomePage::onDeleteEdge);
     connect(ui.undoButton, &QPushButton::clicked, this, &HomePage::onUndo);
+
+    connect(ui.BFS_button, &QPushButton::clicked, this, &HomePage::onRunBFS);
+    connect(ui.DFS_button, &QPushButton::clicked, this, &HomePage::onRunDFS);
 }
 
 /*visualization on add graph*/
@@ -1178,6 +1233,42 @@ void HomePage::updateAdjacencyListDisplay()
     displayText += "</body></html>";
     adjacencyListDisplay->setHtml(displayText);
 }
+
+
+/*Traverse Graph Handling*/
+void HomePage::onRunBFS()
+{
+    bool ok;
+    QString startNode = QInputDialog::getText(this, "Start Node for BFS",
+        "Enter starting node:",
+        QLineEdit::Normal, "", &ok);
+
+    if (ok && !startNode.isEmpty()) 
+    {
+     
+    }
+    else if (ok) 
+    {
+        QMessageBox::warning(this, "Invalid Input", "Start node cannot be empty.");
+    }
+}
+void HomePage::onRunDFS()
+{
+    bool ok;
+    QString startNode = QInputDialog::getText(this, "Start Node for DFS",
+        "Enter starting node:",
+        QLineEdit::Normal, "", &ok);
+
+    if (ok && !startNode.isEmpty())
+    {
+      
+    }
+    else if (ok)
+    {
+        QMessageBox::warning(this, "Invalid Input", "Start node cannot be empty.");
+    }
+}
+
 
 /*Alert msg box and logout*/
 void HomePage::showAlert(const QString& title, const QString& message, QMessageBox::Icon icon)

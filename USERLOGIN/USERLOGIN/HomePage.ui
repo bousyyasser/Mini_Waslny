@@ -160,8 +160,34 @@
         <x>-5</x>
         <y>11</y>
         <width>651</width>
-        <height>481</height>
+        <height>501</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="DFS_button">
+      <property name="geometry">
+       <rect>
+        <x>695</x>
+        <y>210</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>DFS</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="BFS_button">
+      <property name="geometry">
+       <rect>
+        <x>695</x>
+        <y>260</y>
+        <width>75</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>BFS</string>
       </property>
      </widget>
     </widget>
@@ -277,7 +303,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>images/delete.png</normaloff>images/delete.png</iconset>
+        <normaloff>C:/Users/bosyy/.designer/backup/images/delete.png</normaloff>C:/Users/bosyy/.designer/backup/images/delete.png</iconset>
       </property>
      </widget>
      <widget class="GraphView" name="graphView">
@@ -304,7 +330,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>images/undo.png</normaloff>images/undo.png</iconset>
+        <normaloff>C:/Users/bosyy/.designer/backup/images/undo.png</normaloff>C:/Users/bosyy/.designer/backup/images/undo.png</iconset>
       </property>
      </widget>
     </widget>
