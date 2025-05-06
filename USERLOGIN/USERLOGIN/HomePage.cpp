@@ -1236,46 +1236,61 @@ void HomePage::updateAdjacencyListDisplay()
 /*Traverse Graph Handling*/
 void HomePage::onRunBFS()
 {
+    auto adjList = graph.getAdjacencyList();
+    if (adjList.empty()) {
+        showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
+        return;
+    }
 
-        auto adjList = graph.getAdjacencyList();
-        if (adjList.empty()) {
-            showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
-            return;
-        }
+    QStringList cities;
+    for (const auto& cityPair : adjList) {
+        cities << QString::fromStdString(cityPair.first);
+    }
 
-        QStringList cities;
-        for (const auto& cityPair : adjList) {
-            cities << QString::fromStdString(cityPair.first);
-        }
+    bool ok;
+    QString startCity = QInputDialog::getItem(this, "BFS Input", "Select start city:", cities, 0, false, &ok);
+    if (!ok || startCity.isEmpty()) {
+        showAlert("Error", "No start city selected!", QMessageBox::Warning);
+        return;
+    }
 
-        bool ok;
-        QString startCity = QInputDialog::getItem(this, "BFS Input", "Select start city:", cities, 0, false, &ok);
-        if (!ok || startCity.isEmpty()) {
-            showAlert("Error", "No start city selected!", QMessageBox::Warning);
-            return;
-        }
+    resetTraversalNodeColors(traverseScene);
 
-        resetTraversalNodeColors(traverseScene);
+   
+    traversalOutputDisplay->clear();
+
+    list<string> path = traversal->BFS(startCity.toStdString());
+    if (path.empty()) {
+        showAlert("No Path", "No path exists between the cities!", QMessageBox::Warning);
+        return;
+    }
+
+    
+    traversalOutputDisplay->setFontPointSize(12);
+    traversalOutputDisplay->append("BFS Traversal");
+    traversalOutputDisplay->append("----------------");
+    traversalOutputDisplay->append("Starting from: " + startCity);
+    traversalOutputDisplay->append("");
+
+    int step = 1;
+    for (const auto& city : path) {
+        QString qCity = QString::fromStdString(city);
+
        
-        list<string> path = traversal->BFS(startCity.toStdString());
-        if (path.empty()) {
-            showAlert("No Path", "No path exists between the cities!", QMessageBox::Warning);
-            return;
-        }
+        traversalOutputDisplay->append(QString("%1. %2").arg(step++).arg(qCity));
+        QApplication::processEvents();
 
-        QString result = "BFS Path: ";
-        for (const auto& city : path) {
-            QString qCity = QString::fromStdString(city);
-            result += qCity + " -> ";
+        highlightTraversalNode(qCity, traverseScene, QColor(173, 216, 230));
+    }
 
-            highlightTraversalNode(qCity, traverseScene, QColor(173, 216, 230));
-        }
-        result.chop(4);
+    traversalOutputDisplay->append("");
+    traversalOutputDisplay->append("BFS Traversal complete");
 
-        traversalOutputDisplay->setText(result);
-        resetTraversalNodeColors(traverseScene);
-  
+
+    resetTraversalNodeColors(traverseScene);
+
 }
+
 void HomePage::onRunDFS()
 {
     auto adjList = graph.getAdjacencyList();
@@ -1283,34 +1298,57 @@ void HomePage::onRunDFS()
         showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
         return;
     }
+
     QStringList cities;
     for (const auto& cityPair : adjList) {
         cities << QString::fromStdString(cityPair.first);
     }
+
     bool ok;
     QString startCity = QInputDialog::getItem(this, "DFS Input", "Select start city:", cities, 0, false, &ok);
     if (!ok || startCity.isEmpty()) {
         showAlert("Error", "No city selected!", QMessageBox::Warning);
         return;
     }
+
     resetTraversalNodeColors(traverseScene);
+
+    
+    traversalOutputDisplay->clear();
 
     list<string> path = traversal->DFS(startCity.toStdString());
-    QString result = "DFS Traversal: ";
+
+    
+    traversalOutputDisplay->setFontPointSize(12);
+    traversalOutputDisplay->append("DFS Traversal");
+    traversalOutputDisplay->append("----------------");
+    traversalOutputDisplay->append("Starting from: " + startCity);
+    traversalOutputDisplay->append("");
+
+    
+    int step = 1;
     for (const auto& city : path) {
         QString qCity = QString::fromStdString(city);
-        result += qCity + " -> ";
 
+        
+        traversalOutputDisplay->append(QString("%1. %2").arg(step++).arg(qCity));
+        QApplication::processEvents();
+
+       
         highlightTraversalNode(qCity, traverseScene, QColor(144, 238, 144));
     }
-        result.chop(4);
 
-    traversalOutputDisplay->setText(result);
+    traversalOutputDisplay->append("");
+    traversalOutputDisplay->append(" DFS Traversal complete");
+
+
+
     resetTraversalNodeColors(traverseScene);
+
 }
-void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor color)
+
+void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor targetColor)
 {
-    // node by name and highlight it
     for (QGraphicsItem* item : scene->items()) {
         QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
         if (group && group->data(0).toString() == cityName) {
@@ -1318,7 +1356,20 @@ void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* s
             for (QGraphicsItem* child : children) {
                 QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
                 if (node) {
-                    node->setBrush(QBrush(color));
+                    QColor currentColor = Qt::lightGray;
+                    for (int i = 0; i <= 10; i++) {
+                      
+                        int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 10);
+                        int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 10);
+                        int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 10);
+
+                        QColor stepColor(r, g, b);
+                        node->setBrush(QBrush(stepColor));
+
+                      
+                        QApplication::processEvents();
+                        QThread::msleep(100); 
+                    }
                     break;
                 }
             }
@@ -1327,13 +1378,12 @@ void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* s
     }
 
     
-    QApplication::processEvents();
-    //delay
-   QThread::msleep(1500);
+    QThread::msleep(400);
 }
+
 void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
 {
-    // Reset nodes to default
+   //reset to default
     for (QGraphicsItem* item : scene->items()) {
         QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
         if (group) {
@@ -1341,7 +1391,27 @@ void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
             for (QGraphicsItem* child : children) {
                 QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
                 if (node) {
-                    node->setBrush(QBrush(Qt::lightGray));
+                    QColor currentColor = node->brush().color();
+                    QColor targetColor = Qt::lightGray;
+
+                    
+                    if (currentColor != targetColor) {
+                        for (int i = 0; i <= 5; i++) {
+                            
+                            int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 5);
+                            int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 5);
+                            int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 5);
+
+                            QColor stepColor(r, g, b);
+                            node->setBrush(QBrush(stepColor));
+
+                            QApplication::processEvents();
+                            QThread::msleep(20);
+                        }
+                    }
+                    else {
+                        node->setBrush(QBrush(Qt::lightGray));
+                    }
                     break;
                 }
             }

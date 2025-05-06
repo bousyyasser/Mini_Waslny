@@ -13,7 +13,9 @@
 #include <QRadioButton>
 #include <QTimer>
 #include <QThread>
-#include <QResizeEvent>
+#include <QPropertyAnimation>
+#include <QGraphicsColorizeEffect>
+#include <QGraphicsDropShadowEffect>
 #include "Graph.h"
 #include "EdgeView.h"
 #include"GraphTraversal.h"
