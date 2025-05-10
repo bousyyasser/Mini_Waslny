@@ -6,8 +6,6 @@
 #include <stack>
 #include <list>
 #include "Edge.h"
-
-
 using namespace std;
 
 enum operationType { AddCity, DeleteCity, AddEdge, DeleteEdge };
@@ -26,8 +24,6 @@ private:
 	unordered_map<string, list<Edge>>adjacencyList;
 	stack<LastOperation>undoStack;
 	bool isUndo = false;
-	
-
 
 public:
 	/**/
@@ -44,6 +40,4 @@ public:
 
 	/*Get Graph*/
 	unordered_map<string, list<Edge>>& getAdjacencyList();
-
-
 };

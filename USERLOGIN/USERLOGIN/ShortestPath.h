@@ -20,5 +20,11 @@ public:
 	ShortestPath(Graph&);
 	void dijkstra(const string&, const string&);
 	void displayShortestPath(const string&);
+	
+
+	int getDist(const string& destination) const;
+	string getParent(const string& node) const;
+	
+	
 };
 

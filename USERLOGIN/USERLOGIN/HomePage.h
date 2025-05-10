@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QtWidgets/QMainWindow>
 #include "ui_HomePage.h"
 #include <QGraphicsScene>
@@ -16,9 +15,11 @@
 #include <QPropertyAnimation>
 #include <QGraphicsColorizeEffect>
 #include <QGraphicsDropShadowEffect>
+#include <QScrollbar>
 #include "Graph.h"
 #include "EdgeView.h"
 #include"GraphTraversal.h"
+#include "ShortestPath.h"
 
 class HomePage : public QMainWindow
 {
@@ -45,10 +46,7 @@ private slots:
     void onCanvasClicked(QPointF pos);
     void onRunDFS(); 
     void onRunBFS();
-
-  
-
-
+    void onRunDijkstra();
 
 private:
     Ui::HomePageClass ui;
@@ -63,8 +61,14 @@ private:
     QLabel* adjacencyListLabel;
     QTextEdit* traversalOutputDisplay;
     QLabel* traversalOutputLabel;
+    QLabel* shortestPathOutputLabel;
+    QTextEdit* shortestPathOutputDisplay;
+    QPushButton* resetPathButton;
+  
     Graph graph;
     GraphTraversal* traversal;
+ 
+
 
 
     // State flags
@@ -81,11 +85,8 @@ private:
 
     // Setup methods
     void setupUI();
-
     void setUpConnections();
     void setUpGraphScene();
-
-
     void setupTraverseGraphScene();
     void setupShortestPathGraphScene();
     void updateTraverseGraphScene();
@@ -94,7 +95,7 @@ private:
         const unordered_map<string,list<Edge>>& adjacencyList,
         QMap<QString, QGraphicsItemGroup*>& cityNodesMap,
         QMap<QString, QPointF>& cityPositions);
-  
+    void setupShortestPathUI();
   
 
     // Helper methods
@@ -112,5 +113,9 @@ private:
     void highlightEdge(EdgeView* edge, bool highlight);
     void highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor color);
     void resetTraversalNodeColors(QGraphicsScene* scene);
+    void resetPathColors(QGraphicsScene* scene);
+    void highlightPathNodeDynamic(const QString& cityName, QGraphicsScene* scene, QColor targetColor);
+    void highlightPathEdgeDynamic(const QString& sourceCity, const QString& destCity, QColor targetColor);
+    QStringList getGraphCities();
     void showAlert(const QString& title, const QString& message, QMessageBox::Icon icon);
 };

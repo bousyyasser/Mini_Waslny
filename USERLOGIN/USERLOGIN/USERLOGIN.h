@@ -25,7 +25,7 @@ private slots:
 private:
     Ui::USERLOGINClass* ui;
     User user;
-    HomePage* homePage;
+    HomePage homePage;
 
 
     void setupUI();

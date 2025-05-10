@@ -46,8 +46,6 @@ void ShortestPath::dijkstra(const string& source, const string& destination)
 
 	}
 }
-
-
 void ShortestPath::displayShortestPath(const string& target)
 {
 	if (dist.find(target) == dist.end() || dist[target] == MAXDIST)
@@ -71,3 +69,19 @@ void ShortestPath::displayShortestPath(const string& target)
 	}
 	cout << '\n';
 }
+int ShortestPath::getDist(const string& destination) const 
+{
+	auto it = dist.find(destination);
+	if (it != dist.end()) {
+		return it->second;
+	}
+	return MAXDIST;
+}
+string ShortestPath::getParent(const string& node) const {
+	auto it = parent.find(node);
+	if (it != parent.end()) {
+		return it->second;
+	}
+	return ""; 
+}
+

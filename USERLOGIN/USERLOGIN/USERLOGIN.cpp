@@ -126,8 +126,6 @@ void USERLOGIN::on_loginButton_clicked()
     }
 
     handleLogin(username, password);
-
-
 }
 void USERLOGIN::handleLogin(const QString& username, const QString& password)
 {
@@ -137,8 +135,8 @@ void USERLOGIN::handleLogin(const QString& username, const QString& password)
         if (user.loginAuthen(username, password)) {
             showStatus("Login Successfully!", "green");
             QTimer::singleShot(1000, this, [this, username]() {
-                homePage = new HomePage(username);
-                homePage->show();
+               
+                homePage.show();
                 this->hide();
                 });
         }
@@ -155,8 +153,8 @@ void USERLOGIN::handleLogin(const QString& username, const QString& password)
         showStatus("User Registered and Logged in Successfully!", "green");
 
         QTimer::singleShot(1000, this, [this, username]() {
-            homePage = new HomePage(username);
-            homePage->show();
+           
+            homePage.show();
             this->hide();
             });
     }

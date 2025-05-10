@@ -16,7 +16,7 @@ HomePage::HomePage(QString username, QWidget* parent)
     ui.welcomeLabel->setText("Welcome, " + username + "!");
     ui.welcomeLabel->setAlignment(Qt::AlignCenter);
     ui.welcomeLabel->setStyleSheet(
-        "font-size: 40px;" 
+        "font-size: 38px;" 
         "color: black; "
         "font-weight: bold; "
         "font-family: 'Lucida Calligraphy', cursive;"
@@ -25,12 +25,11 @@ HomePage::HomePage(QString username, QWidget* parent)
     
     ui.desLabel->setStyleSheet(
         "font-family: 'Times New Roman';"
-        "font-size: 14px;"
+        "font-size: 19px;"
         "font-weight: normal;"
         "color:#B0B0B0;"
     );
     ui.desLabel->setText(
-        "Welcome to Mini-Waslny!\n\n"
         "Your goal is to reach your destination in the shortest path possible.\n"
         "This system allows you to:\n"
         "- Add cities and the distances between them.\n"
@@ -52,7 +51,7 @@ void HomePage::setupUI()
     // Set left panel style
     ui.leftPanel->setStyleSheet("background-color: #2e2e2e;");
 
-    // Setup button styles
+    // Setup button styles for home
     QString buttonStyle = R"(
         QPushButton {
             background-color: #2e2e2e;
@@ -195,7 +194,7 @@ void HomePage::setupUI()
     adjacencyListLabel = new QLabel("Graph Adjacency List");
     adjacencyListLabel->setStyleSheet(R"(
         font-family: 'Segoe UI', 'Arial';
-        font-size: 16px;
+        font-size: 18px;
         font-weight: bold;
         color: #333333;
     )");
@@ -211,8 +210,8 @@ void HomePage::setupUI()
         font-size: 12px;
         color: #333333;
     )");
-    adjacencyListDisplay->setMinimumHeight(200);  
-    adjacencyListDisplay->setMinimumWidth(250);
+    adjacencyListDisplay->setMinimumHeight(300);  
+    adjacencyListDisplay->setMinimumWidth(350);
 
     QVBoxLayout* graphViewLayout = new QVBoxLayout();
     graphViewLayout->addWidget(ui.graphView);
@@ -252,12 +251,11 @@ void HomePage::setupUI()
     traversalOutputLabel = new QLabel("Traversal Output");
     traversalOutputLabel->setStyleSheet(R"(
     font-family: 'Segoe UI', 'Arial';
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #333333;
    )");
 
-    // Output display box
     traversalOutputDisplay = new QTextEdit();
     traversalOutputDisplay->setReadOnly(true);
     traversalOutputDisplay->setStyleSheet(R"(
@@ -269,13 +267,13 @@ void HomePage::setupUI()
     font-size: 12px;
     color: #333333;
    )");
-    traversalOutputDisplay->setMinimumHeight(200);
-    traversalOutputDisplay->setMinimumWidth(250);
+    traversalOutputDisplay->setMinimumHeight(300);
+    traversalOutputDisplay->setMinimumWidth(350);
 
     QVBoxLayout* traversalGraphViewLayout = new QVBoxLayout();
     traversalGraphViewLayout->addWidget(ui.TraverseGraphView); 
 
-    // Right side layout (buttons and output)
+    
     QVBoxLayout* traversalRightLayout = new QVBoxLayout();
     traversalRightLayout->addWidget(traversalOutputLabel);
     traversalRightLayout->addWidget(traversalOutputDisplay);
@@ -284,18 +282,19 @@ void HomePage::setupUI()
     traversalButtonLayout->addWidget(ui.DFS_button);
     traversalButtonLayout->addWidget(ui.BFS_button);
     traversalRightLayout->addLayout(traversalButtonLayout);
-
     traversalRightLayout->addStretch();
 
-    
     QHBoxLayout* traversalPageLayout = new QHBoxLayout(ui.TraverseWidget);
-    traversalPageLayout->addLayout(traversalGraphViewLayout, 1); // stretch factor = 1
+    traversalPageLayout->addLayout(traversalGraphViewLayout, 1); 
     traversalPageLayout->addLayout(traversalRightLayout);
 
     traversalPageLayout->setContentsMargins(10, 10, 10, 10);
     traversalPageLayout->setSpacing(15);
     ui.TraverseWidget->setLayout(traversalPageLayout);
 
+    //Shortest Path Page
+    ui.dijkstra_btn->setStyleSheet(addDeleteButtonStyle);
+    setupShortestPathUI();
 
     //back button on top
     ui.back->raise();
@@ -325,7 +324,91 @@ void HomePage::setUpConnections()
 
     connect(ui.BFS_button, &QPushButton::clicked, this, &HomePage::onRunBFS);
     connect(ui.DFS_button, &QPushButton::clicked, this, &HomePage::onRunDFS);
+
+    connect(ui.dijkstra_btn, &QPushButton::clicked, this, &HomePage::onRunDijkstra);
 }
+void HomePage::setupShortestPathUI()
+{
+    
+    shortestPathOutputLabel = new QLabel("Shortest Path Output");
+    shortestPathOutputLabel->setStyleSheet(R"(
+        font-family: 'Segoe UI', 'Arial';
+        font-size: 16px;
+        font-weight: bold;
+        color: #333333;
+    )");
+
+    
+    shortestPathOutputDisplay = new QTextEdit();
+    shortestPathOutputDisplay->setReadOnly(true);
+    shortestPathOutputDisplay->setStyleSheet(R"(
+        background-color: white;
+        border: 2px solid #d1d1d1;
+        border-radius: 10px;
+        padding: 10px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 12px;
+        color: #333333;
+    )");
+    shortestPathOutputDisplay->setMinimumHeight(350);
+    shortestPathOutputDisplay->setMinimumWidth(400);
+
+   
+    resetPathButton = new QPushButton("Reset Path");
+    resetPathButton->setStyleSheet(R"(
+        QPushButton {
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            font-family: 'Segoe UI', 'Arial';
+            font-size: 14px;
+            border: 2px solid #d1d1d1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        QPushButton:hover {
+            background-color: #f0f0f0;
+            color: black;
+        }
+        QPushButton:pressed {
+            background-color: #e0e0e0;
+        }
+    )");
+
+   
+    connect(resetPathButton, &QPushButton::clicked, this, [this]() {
+        resetPathColors(shortestPathScene);
+        shortestPathOutputDisplay->clear();
+        });
+
+    
+    QVBoxLayout* shortestPathRightLayout = new QVBoxLayout();
+
+   
+    shortestPathRightLayout->addWidget(shortestPathOutputLabel);
+    shortestPathRightLayout->addWidget(shortestPathOutputDisplay);
+    shortestPathRightLayout->addWidget(resetPathButton);
+    shortestPathRightLayout->addWidget(ui.dijkstra_btn);
+    shortestPathRightLayout->addStretch();
+
+   
+    QHBoxLayout* shortestPathPageLayout = new QHBoxLayout(ui.ShortestPathWidget);
+
+    
+    QVBoxLayout* shortestPathGraphViewLayout = new QVBoxLayout();
+    shortestPathGraphViewLayout->addWidget(ui.shortestPathGraphView);
+
+    
+    shortestPathPageLayout->addLayout(shortestPathGraphViewLayout, 1);
+    shortestPathPageLayout->addLayout(shortestPathRightLayout);
+
+   
+    shortestPathPageLayout->setContentsMargins(10, 10, 10, 10);
+    shortestPathPageLayout->setSpacing(15);
+    ui.ShortestPathWidget->setLayout(shortestPathPageLayout);
+}
+
 
 /*visualization on add graph*/
 void HomePage::setUpGraphScene()
@@ -342,10 +425,10 @@ void HomePage::setupTraverseGraphScene()
 void HomePage::setupShortestPathGraphScene()
 {
    shortestPathScene = new QGraphicsScene(this);
-    ui.shortestPathGraphView->setScene(shortestPathScene);
+   ui.shortestPathGraphView->setScene(shortestPathScene);
 }
 
-
+/*Home Page Buttons*/
 void HomePage::showHomePage()
 {
     ui.leftPanel->setVisible(true);
@@ -379,7 +462,7 @@ void HomePage::showShortestPathPage()
 }
 
 
-/*return home*/
+/*Return Home*/
 void HomePage::goBack()
 {
     ui.leftPanel->setVisible(true);
@@ -706,8 +789,10 @@ void HomePage::layoutNodesCircular(QGraphicsScene* targetScene,
 
         QGraphicsItemGroup* group = targetScene->createItemGroup({ node, label });
         group->setFlag(QGraphicsItem::ItemIsSelectable);
+        group->setFlag(QGraphicsItem::ItemIsMovable); 
         group->setData(0, qcityName);
         group->setPos(pos);
+
 
         cityNodesMap[qcityName] = group;
     }
@@ -1286,11 +1371,7 @@ void HomePage::onRunBFS()
     traversalOutputDisplay->append("");
     traversalOutputDisplay->append("BFS Traversal complete");
 
-
-    resetTraversalNodeColors(traverseScene);
-
 }
-
 void HomePage::onRunDFS()
 {
     auto adjList = graph.getAdjacencyList();
@@ -1341,12 +1422,7 @@ void HomePage::onRunDFS()
     traversalOutputDisplay->append("");
     traversalOutputDisplay->append(" DFS Traversal complete");
 
-
-
-    resetTraversalNodeColors(traverseScene);
-
 }
-
 void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor targetColor)
 {
     for (QGraphicsItem* item : scene->items()) {
@@ -1380,7 +1456,6 @@ void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* s
     
     QThread::msleep(400);
 }
-
 void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
 {
    //reset to default
@@ -1415,6 +1490,358 @@ void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
                     break;
                 }
             }
+        }
+    }
+}
+
+
+/*Shortest Path Handling*/
+void HomePage::onRunDijkstra()
+{
+    resetPathColors(shortestPathScene);
+    shortestPathOutputDisplay->clear();
+
+   
+    auto& adjList = graph.getAdjacencyList();
+    if (adjList.empty()) {
+        showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
+        return;
+    }
+
+    shortestPathOutputDisplay->append("<b>Graph Adjacency List:</b>");
+    QString adjListStr;
+    for (const auto& city : adjList) {
+        adjListStr += QString::fromStdString(city.first) + " : ";
+        for (const auto& neighbor : city.second) {
+            adjListStr += QString::fromStdString(neighbor.destination) +
+                "(" + QString::number(neighbor.distance) + ") ";
+        }
+        adjListStr += "<br>";
+    }
+    shortestPathOutputDisplay->append(adjListStr);
+    shortestPathOutputDisplay->append("<hr>");
+
+   
+    bool ok;
+    QString sourceCity = QInputDialog::getItem(this, "Select Source",
+        "Choose starting city:",
+        getGraphCities(), 0, false, &ok);
+    if (!ok) return;
+
+    
+    QString destCity = QInputDialog::getItem(this, "Select Destination",
+        "Choose destination city:",
+        getGraphCities(), 0, false, &ok);
+    if (!ok) return;
+
+    
+    if (sourceCity == destCity) {
+        QMessageBox::information(this, "Information", "Source and destination are the same.");
+        return;
+    }
+
+   
+    string source = sourceCity.toStdString();
+    string destination = destCity.toStdString();
+
+    
+    ShortestPath shortestPath(graph);
+
+   
+    shortestPathOutputDisplay->append("<b>Initial distances:</b>");
+    for (const auto& city : adjList) {
+        shortestPathOutputDisplay->append(QString::fromStdString(city.first) + ": INF");
+    }
+    shortestPathOutputDisplay->append(QString::fromStdString(source) + ": 0");
+    shortestPathOutputDisplay->append("<hr>");
+
+    highlightPathNodeDynamic(sourceCity, shortestPathScene, Qt::green);
+    QApplication::processEvents();
+
+    
+    shortestPathOutputDisplay->append("<b>Algorithm steps:</b>");
+    shortestPathOutputDisplay->append("Running Dijkstra's algorithm from " +
+        sourceCity + " to " + destCity + "...");
+
+   
+    unordered_map<string, int> dist;
+    unordered_map<string, string> parent;
+
+    for (const auto& city : adjList) {
+        dist[city.first] = MAXDIST;
+        parent[city.first] = "";
+    }
+
+   
+    set<pair<int, string>> nextNode;
+    dist[source] = 0;
+    nextNode.insert({ 0, source });
+
+    int step = 1;
+
+    
+    while (!nextNode.empty()) {
+        auto it = nextNode.begin();
+        int cost = it->first;
+        string node = it->second;
+        nextNode.erase(nextNode.begin());
+
+        shortestPathOutputDisplay->append("<b>Step " + QString::number(step++) + ":</b> Processing node " +
+            QString::fromStdString(node) + " (distance = " +
+            QString::number(cost) + ")");
+
+       
+        highlightPathNodeDynamic(QString::fromStdString(node), shortestPathScene, Qt::yellow);
+        shortestPathOutputDisplay->verticalScrollBar()->setValue(
+            shortestPathOutputDisplay->verticalScrollBar()->maximum());
+        QApplication::processEvents();
+        QThread::msleep(600);
+
+      
+        for (auto& child : adjList.at(node)) {
+            int newCost = child.distance + cost;
+
+        
+            highlightPathEdgeDynamic(QString::fromStdString(node),
+                QString::fromStdString(child.destination),
+                Qt::blue);
+
+            QString updateMsg = "  Checking edge " + QString::fromStdString(node) +
+                " -> " + QString::fromStdString(child.destination) +
+                " (cost = " + QString::number(child.distance) + ")";
+
+            if (newCost < dist[child.destination]) {
+               
+                dist[child.destination] = newCost;
+                parent[child.destination] = node;
+                nextNode.insert({ newCost, child.destination });
+
+                updateMsg += "<br>  Found better path to " +
+                    QString::fromStdString(child.destination) +
+                    ": new distance = " + QString::number(newCost) +
+                    ", via " + QString::fromStdString(node);
+
+               
+                highlightPathNodeDynamic(QString::fromStdString(child.destination),
+                    shortestPathScene,
+                    Qt::cyan);
+            }
+            else {
+              
+                updateMsg += "<br>  Not a better path (current best = " +
+                    (dist[child.destination] == MAXDIST ?
+                        "INF" : QString::number(dist[child.destination])) + ")";
+            }
+
+           
+            shortestPathOutputDisplay->append(updateMsg);
+            shortestPathOutputDisplay->verticalScrollBar()->setValue(
+                shortestPathOutputDisplay->verticalScrollBar()->maximum());
+            QApplication::processEvents();
+            QThread::msleep(600);
+        }
+
+      
+        shortestPathOutputDisplay->append("Current distances:");
+        for (const auto& d : dist) {
+            QString distValue = (d.second == MAXDIST) ? "INF" : QString::number(d.second);
+            shortestPathOutputDisplay->append("  " + QString::fromStdString(d.first) + ": " + distValue);
+        }
+        shortestPathOutputDisplay->append("<hr>");
+        shortestPathOutputDisplay->verticalScrollBar()->setValue(
+            shortestPathOutputDisplay->verticalScrollBar()->maximum());
+        QApplication::processEvents();
+        QThread::msleep(300);
+    }
+
+    
+    shortestPath.dijkstra(source, destination);
+    int shortestDistance = shortestPath.getDist(destination);
+
+    // Show results
+    if (shortestDistance == MAXDIST) {
+        shortestPathOutputDisplay->append("<b>Result:</b> No path exists from " +
+            sourceCity + " to " + destCity);
+    }
+    else {
+       
+        shortestPathOutputDisplay->append("<b>Shortest path found!</b>");
+        shortestPathOutputDisplay->append("Distance from " + sourceCity + " to " +
+            destCity + " = " + QString::number(shortestDistance));
+
+       
+        vector<string> path;
+        string current = destination;
+
+        while (!current.empty()) {
+            path.push_back(current);
+            current = shortestPath.getParent(current);
+        }
+
+        
+        QString pathStr = "Path: ";
+        for (int i = path.size() - 1; i >= 0; i--) {
+            pathStr += QString::fromStdString(path[i]);
+            if (i > 0) pathStr += " -> ";
+        }
+        shortestPathOutputDisplay->append(pathStr);
+
+       
+        resetPathColors(shortestPathScene);
+
+        for (int i = path.size() - 1; i >= 0; i--) {
+            highlightPathNodeDynamic(QString::fromStdString(path[i]),
+                shortestPathScene, Qt::green);
+
+            if (i > 0) {
+                highlightPathEdgeDynamic(QString::fromStdString(path[i]),
+                    QString::fromStdString(path[i - 1]),
+                    Qt::green);
+            }
+
+            QApplication::processEvents();
+            QThread::msleep(300);
+        }
+    }
+
+   
+    shortestPathOutputDisplay->verticalScrollBar()->setValue(
+        shortestPathOutputDisplay->verticalScrollBar()->maximum());
+}
+QStringList HomePage::getGraphCities()
+{
+    QStringList cities;
+    auto& adjList = graph.getAdjacencyList();
+
+    for (const auto& city : adjList) {
+        cities.append(QString::fromStdString(city.first));
+    }
+
+    return cities;
+}
+void HomePage::highlightPathNodeDynamic(const QString& cityName, QGraphicsScene* scene, QColor targetColor)
+{
+    for (QGraphicsItem* item : scene->items()) {
+        QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
+        if (group && group->data(0).toString() == cityName) {
+            QList<QGraphicsItem*> children = group->childItems();
+            for (QGraphicsItem* child : children) {
+                QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
+                if (node) {
+                    QColor currentColor = Qt::lightGray;
+                    for (int i = 0; i <= 10; i++) {
+                        // Calculate intermediate color
+                        int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 10);
+                        int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 10);
+                        int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 10);
+
+                        QColor stepColor(r, g, b);
+                        node->setBrush(QBrush(stepColor));
+
+                        
+                        QApplication::processEvents();
+                        QThread::msleep(50); 
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    // Pause briefly after highlighting
+    QThread::msleep(200);
+}
+void HomePage::highlightPathEdgeDynamic(const QString& sourceCity, const QString& destCity, QColor targetColor)
+{
+    for (EdgeView* edge : shortestPathEdges) {
+        if ((edge->getSource() == sourceCity && edge->getDestination() == destCity) ||
+            (edge->getSource() == destCity && edge->getDestination() == sourceCity)) {
+
+            QPen currentPen = edge->pen();
+            QColor currentColor = currentPen.color();
+            qreal currentWidth = currentPen.widthF();
+
+            qreal targetWidth = 3.5;
+
+            for (int i = 0; i <= 10; i++) {
+                int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 10);
+                int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 10);
+                int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 10);
+
+                qreal width = currentWidth + (i * (targetWidth - currentWidth) / 10);
+
+                QColor stepColor(r, g, b);
+                QPen stepPen(stepColor, width);
+
+                edge->setPen(stepPen);
+
+                QApplication::processEvents();
+                QThread::msleep(50);
+            }
+            break;
+        }
+    }
+
+    QThread::msleep(200);
+}
+void HomePage::resetPathColors(QGraphicsScene* scene)
+{
+   
+    for (QGraphicsItem* item : scene->items()) {
+        QGraphicsItemGroup* group = qgraphicsitem_cast<QGraphicsItemGroup*>(item);
+        if (group) {
+            QList<QGraphicsItem*> children = group->childItems();
+            for (QGraphicsItem* child : children) {
+                QGraphicsEllipseItem* node = qgraphicsitem_cast<QGraphicsEllipseItem*>(child);
+                if (node) {
+                    QColor currentColor = node->brush().color();
+                    QColor targetColor = Qt::lightGray;
+
+                    if (currentColor != targetColor) {
+                        for (int i = 0; i <= 5; i++) {
+                            int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 5);
+                            int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 5);
+                            int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 5);
+
+                            node->setBrush(QBrush(QColor(r, g, b)));
+                            QApplication::processEvents();
+                            QThread::msleep(20);
+                        }
+                    }
+                    else {
+                        node->setBrush(QBrush(Qt::lightGray));
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+   
+    for (EdgeView* edge : shortestPathEdges) {
+        QPen currentPen = edge->pen();
+        QColor currentColor = currentPen.color();
+        QColor targetColor = Qt::black; 
+        qreal currentWidth = currentPen.widthF();
+        qreal targetWidth = 2.0;
+
+        if (currentColor != targetColor || currentWidth != targetWidth) {
+            for (int i = 0; i <= 5; i++) {
+             
+                int r = currentColor.red() + (i * (targetColor.red() - currentColor.red()) / 5);
+                int g = currentColor.green() + (i * (targetColor.green() - currentColor.green()) / 5);
+                int b = currentColor.blue() + (i * (targetColor.blue() - currentColor.blue()) / 5);
+
+                qreal width = currentWidth + (i * (targetWidth - currentWidth) / 5);
+
+                edge->setPen(QPen(QColor(r, g, b), width));
+                QApplication::processEvents();
+                QThread::msleep(20);
+            }
+        }
+        else {
+            edge->setPen(QPen(targetColor, targetWidth));
         }
     }
 }

@@ -12,7 +12,6 @@ void Graph::addCity(const string& city)
 		undoStack.push({ AddCity,city });
 	}
 }
-
 void Graph::addEdge(const string& source, const string& destination, int distance)
 {
 	addCity(source);
@@ -27,7 +26,6 @@ void Graph::addEdge(const string& source, const string& destination, int distanc
 		undoStack.push({ AddEdge,source,destination,distance });
 	}
 }
-
 void Graph::deleteEdge(const string& source, const string& destination)
 {
 	if (!EdgeExists(source, destination))
@@ -57,23 +55,22 @@ void Graph::deleteEdge(const string& source, const string& destination)
 		}
 	}
 
-		auto& destEdges = adjacencyList[destination];
-		for (auto it = destEdges.begin(); it != destEdges.end(); )
+	auto& destEdges = adjacencyList[destination];
+	for (auto it = destEdges.begin(); it != destEdges.end(); )
+	{
+		if (it->destination == source)
 		{
-			if (it->destination == source)
-			{
-				it = destEdges.erase(it);
-			}
-			else
-			{
-				++it;
-			}
+			it = destEdges.erase(it);
 		}
+		else
+		{
+			++it;
+		}
+	}
 
 	if(!isUndo)
 	undoStack.push({ DeleteEdge,source,destination,dist });
 }
-
 void Graph::deleteCity(const string& cityToDelete)
 {
 
@@ -111,7 +108,6 @@ void Graph::deleteCity(const string& cityToDelete)
 	if(!isUndo)
 	undoStack.push({ DeleteCity,cityToDelete,"",0,EdgesConnected });
 }
-
 
 
 
