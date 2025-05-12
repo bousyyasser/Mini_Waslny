@@ -1,0 +1,1 @@
+{"graph":{"A":[{"destination":"B","distance":5},{"destination":"C","distance":10}],"B":[{"destination":"A","distance":5}],"C":[{"destination":"A","distance":10}]}}
