@@ -204,3 +204,4 @@ void USERLOGIN::showStatus(const QString& message, const QString& color)
             "padding: 5px; border-radius: 5px;").arg(color));
     ui->statusLabel->setText(message);
 }
+

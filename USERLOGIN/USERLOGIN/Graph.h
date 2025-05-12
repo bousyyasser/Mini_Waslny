@@ -6,6 +6,13 @@
 #include <stack>
 #include <list>
 #include "Edge.h"
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
+
+using namespace rapidjson;
+
 using namespace std;
 
 enum operationType { AddCity, DeleteCity, AddEdge, DeleteEdge };
@@ -40,4 +47,6 @@ public:
 
 	/*Get Graph*/
 	unordered_map<string, list<Edge>>& getAdjacencyList();
+	Value to_json(Document::AllocatorType& allocator) const;
+	static Graph from_json(const Value& obj);
 };

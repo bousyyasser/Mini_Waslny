@@ -37,7 +37,7 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>Qt6</QtInstall>
+    <QtInstall>qq</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
@@ -99,6 +99,7 @@
     <QtMoc Include="USERLOGIN.h" />
     <ClCompile Include="Edge.cpp" />
     <ClCompile Include="EdgeView.cpp" />
+    <ClCompile Include="FileHandling.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="GraphTraversal.cpp" />
     <ClCompile Include="GraphView.cpp" />
@@ -113,6 +114,7 @@
     <QtMoc Include="GraphView.h" />
     <ClInclude Include="Edge.h" />
     <QtMoc Include="EdgeView.h" />
+    <ClInclude Include="FileHandling.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="GraphTraversal.h" />
     <ClInclude Include="ShortestPath.h" />

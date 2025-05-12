@@ -5,6 +5,18 @@
 #include "EdgeView.h"
 #include "GraphTraversal.h"
 
+
+
+void HomePage::setGraph(const Graph& graph) {
+    this->graph = graph;
+}
+
+Graph HomePage::getGraph() const {
+    return graph;
+}
+
+
+
 HomePage::HomePage(QString username, QWidget* parent)
     : QMainWindow(parent)
 {
@@ -1894,4 +1906,5 @@ void HomePage::logout()
 HomePage::~HomePage()
 {
 }
+
 

@@ -4,6 +4,13 @@
 #include "User.h"
 #include "HomePage.h"
 
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
+
+using namespace rapidjson;
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
@@ -18,6 +25,10 @@ class USERLOGIN : public QMainWindow
 public:
     USERLOGIN(QWidget* parent = nullptr);
     ~USERLOGIN();
+    void setuser(const User& user) { this->user = user; }
+    void getuser(User& user) { user = this->user; }
+    void setgraph(const Graph& graph) { this->homePage.setGraph(graph); }
+    Graph getgraph() const { return this->homePage.getGraph(); }
 
 private slots:
     void on_loginButton_clicked();

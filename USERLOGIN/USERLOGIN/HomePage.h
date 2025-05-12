@@ -28,6 +28,8 @@ class HomePage : public QMainWindow
 public:
     HomePage(QString username, QWidget* parent = nullptr);
     ~HomePage();
+    void setGraph( const Graph& graph);
+    Graph getGraph() const ;
 
 private slots:
     void showHomePage();
@@ -47,6 +49,7 @@ private slots:
     void onRunDFS(); 
     void onRunBFS();
     void onRunDijkstra();
+    
 
 private:
     Ui::HomePageClass ui;
@@ -64,7 +67,6 @@ private:
     QLabel* shortestPathOutputLabel;
     QTextEdit* shortestPathOutputDisplay;
     QPushButton* resetPathButton;
-  
     Graph graph;
     GraphTraversal* traversal;
  
