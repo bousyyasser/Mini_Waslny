@@ -18,7 +18,7 @@ USERLOGIN::~USERLOGIN()
 
 void USERLOGIN::setupUI()
 {
-   
+
     ui->loginContainer->raise();
     ui->usernameLineEdit->raise();
     ui->passwordLineEdit->raise();
@@ -26,12 +26,12 @@ void USERLOGIN::setupUI()
     ui->statusLabel->raise();
     ui->titleLabel->raise();
 
-   
+
     ui->usernameLineEdit->setPlaceholderText("Enter Username");
     ui->passwordLineEdit->setPlaceholderText("Enter Password");
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
 
-   
+
     ui->titleLabel->setStyleSheet(R"(
         QLabel {
             color: #808080; 
@@ -44,7 +44,7 @@ void USERLOGIN::setupUI()
         }
     )");
 
-    
+
     ui->widget->setStyleSheet(R"(
         #widget {
             background-image: url(:/images/bg.jpg);
@@ -57,7 +57,7 @@ void USERLOGIN::setupUI()
         }
     )");
 
-   
+
     ui->loginContainer->setStyleSheet(R"(
         QWidget {
             background-color: rgba(255, 255, 255, 0.98);
@@ -67,7 +67,7 @@ void USERLOGIN::setupUI()
         }
     )");
 
-    
+
     QString inputStyle = R"(
         QLineEdit {
             background-color: rgba(255, 255, 255, 0.8);
@@ -88,7 +88,7 @@ void USERLOGIN::setupUI()
     ui->usernameLineEdit->setStyleSheet(inputStyle);
     ui->passwordLineEdit->setStyleSheet(inputStyle);
 
-    
+
     ui->loginButton->setStyleSheet(R"(
         QPushButton {
             background-color: #1c3b6f;  
@@ -116,7 +116,7 @@ void USERLOGIN::on_loginButton_clicked()
     QString username = ui->usernameLineEdit->text().trimmed();
     QString password = ui->passwordLineEdit->text().trimmed();
 
-    
+
     ui->loginButton->setEnabled(false);
 
     if (username.isEmpty() || password.isEmpty()) {
@@ -129,14 +129,15 @@ void USERLOGIN::on_loginButton_clicked()
 }
 void USERLOGIN::handleLogin(const QString& username, const QString& password)
 {
-    
+
     if (user.isUserExist(username)) {
-        
+
         if (user.loginAuthen(username, password)) {
             showStatus("Login Successfully!", "green");
             QTimer::singleShot(1000, this, [this, username]() {
-               
-                homePage.show();
+                homePage = new HomePage(username);
+                homePage->setGraph(tempGraph);
+                homePage->show();
                 this->hide();
                 });
         }
@@ -153,8 +154,9 @@ void USERLOGIN::handleLogin(const QString& username, const QString& password)
         showStatus("User Registered and Logged in Successfully!", "green");
 
         QTimer::singleShot(1000, this, [this, username]() {
-           
-            homePage.show();
+            homePage = new HomePage(username);
+            homePage->setGraph(tempGraph);
+            homePage->show();
             this->hide();
             });
     }

@@ -3,7 +3,7 @@
 GraphTraversal::GraphTraversal(Graph& g): graph(g) 
 {}
 
-list<string>GraphTraversal::DFS(const string& startCity)
+vector<string>GraphTraversal::DFS(const string& startCity)
 {
 	if (!graph.cityExists(startCity))
 	{
@@ -11,7 +11,7 @@ list<string>GraphTraversal::DFS(const string& startCity)
 	}
 
 	unordered_map<string, bool>visited;
-	list<string>path;
+	vector<string>path;
 	stack<string>s;
 
 	s.push(startCity);
@@ -39,7 +39,7 @@ list<string>GraphTraversal::DFS(const string& startCity)
 	return path;
 }
 
-list<string> GraphTraversal::BFS(const string& startCity)
+vector<string> GraphTraversal::BFS(const string& startCity)
 {
 
 	if (!graph.cityExists(startCity))
@@ -49,7 +49,7 @@ list<string> GraphTraversal::BFS(const string& startCity)
 	unordered_map<string, bool>visited;
 	queue<string>q;
 
-	list<string>path;
+	vector<string>path;
 
 	q.push(startCity);
 	visited[startCity] = true;

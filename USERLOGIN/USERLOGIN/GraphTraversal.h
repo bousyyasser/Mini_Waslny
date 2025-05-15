@@ -3,7 +3,7 @@
 #include<unordered_map>
 #include<stack>
 #include <queue>
-#include<list>
+#include<vector>
 class GraphTraversal
 {
 private:
@@ -12,7 +12,7 @@ private:
 public: 
 	GraphTraversal(Graph&);
 
-	list<string>DFS(const string& );
-	list<string> BFS(const string&);
+	vector<string>DFS(const string& );
+	vector<string> BFS(const string&);
 };
 

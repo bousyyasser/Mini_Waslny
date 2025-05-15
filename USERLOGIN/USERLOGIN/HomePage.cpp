@@ -7,14 +7,24 @@
 
 
 
-void HomePage::setGraph(const Graph& graph) {
+void HomePage::setGraph(const Graph& graph)
+{
+
+
     this->graph = graph;
+
+    //Update visualization
+    updateGraphScene();
+    updateAdjacencyListDisplay();
+    updateTraverseGraphScene();
+    updateShortestPathGraphScene();
 }
 
-Graph HomePage::getGraph() const {
+Graph HomePage::getGraph() const
+{
+
     return graph;
 }
-
 
 
 HomePage::HomePage(QString username, QWidget* parent)
@@ -23,6 +33,7 @@ HomePage::HomePage(QString username, QWidget* parent)
     ui.setupUi(this);
     traversal = new GraphTraversal(graph);
     setupUI();
+
 
 
     ui.welcomeLabel->setText("Welcome, " + username + "!");
@@ -765,7 +776,7 @@ void HomePage::updateGraphScene()
     updateAdjacencyListDisplay();
 }
 void HomePage::layoutNodesCircular(QGraphicsScene* targetScene,
-    const unordered_map<string,list<Edge>>& adjacencyList,
+    const unordered_map<string,vector<Edge>>& adjacencyList,
     QMap<QString, QGraphicsItemGroup*>& cityNodesMap,
     QMap<QString, QPointF>& cityPositions)
 {
@@ -1297,7 +1308,7 @@ void HomePage::updateAdjacencyListDisplay()
 
         for (const auto& cityPair : adjacencyList) {
             const string& city = cityPair.first;
-            const list<Edge>& edges = cityPair.second;
+            const vector<Edge>& edges = cityPair.second;
 
             displayText += "<tr>";
             displayText += "<td class='city'>" + QString::fromStdString(city) + "</td>";
@@ -1356,7 +1367,7 @@ void HomePage::onRunBFS()
    
     traversalOutputDisplay->clear();
 
-    list<string> path = traversal->BFS(startCity.toStdString());
+   vector<string> path = traversal->BFS(startCity.toStdString());
     if (path.empty()) {
         showAlert("No Path", "No path exists between the cities!", QMessageBox::Warning);
         return;
@@ -1409,7 +1420,7 @@ void HomePage::onRunDFS()
     
     traversalOutputDisplay->clear();
 
-    list<string> path = traversal->DFS(startCity.toStdString());
+    vector<string> path = traversal->DFS(startCity.toStdString());
 
     
     traversalOutputDisplay->setFontPointSize(12);
@@ -1505,6 +1516,8 @@ void HomePage::resetTraversalNodeColors(QGraphicsScene* scene)
         }
     }
 }
+
+
 
 
 /*Shortest Path Handling*/
@@ -1897,6 +1910,7 @@ void HomePage::showAlert(const QString& title, const QString& message, QMessageB
 }
 void HomePage::logout()
 {
+   
     USERLOGIN* loginWindow = new USERLOGIN();
     loginWindow->setWindowFlags(Qt::Window);
     loginWindow->show();

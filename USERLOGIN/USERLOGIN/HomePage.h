@@ -21,6 +21,7 @@
 #include"GraphTraversal.h"
 #include "ShortestPath.h"
 
+
 class HomePage : public QMainWindow
 {
     Q_OBJECT
@@ -28,8 +29,8 @@ class HomePage : public QMainWindow
 public:
     HomePage(QString username, QWidget* parent = nullptr);
     ~HomePage();
-    void setGraph( const Graph& graph);
-    Graph getGraph() const ;
+    void setGraph(const Graph& graph);
+    Graph getGraph() const;
 
 private slots:
     void showHomePage();
@@ -46,10 +47,10 @@ private slots:
     void onDeleteEdge();
     void onUndo();
     void onCanvasClicked(QPointF pos);
-    void onRunDFS(); 
+    void onRunDFS();
     void onRunBFS();
     void onRunDijkstra();
-    
+
 
 private:
     Ui::HomePageClass ui;
@@ -69,7 +70,7 @@ private:
     QPushButton* resetPathButton;
     Graph graph;
     GraphTraversal* traversal;
- 
+
 
 
 
@@ -94,11 +95,11 @@ private:
     void updateTraverseGraphScene();
     void updateShortestPathGraphScene();
     void layoutNodesCircular(QGraphicsScene* targetScene,
-        const unordered_map<string,list<Edge>>& adjacencyList,
+        const unordered_map<string, vector<Edge>>& adjacencyList,
         QMap<QString, QGraphicsItemGroup*>& cityNodesMap,
         QMap<QString, QPointF>& cityPositions);
     void setupShortestPathUI();
-  
+
 
     // Helper methods
     void handleAddCity(QPointF pos);

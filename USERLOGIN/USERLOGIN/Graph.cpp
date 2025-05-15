@@ -6,7 +6,7 @@ void Graph::addCity(const string& city)
 
 	if (adjacencyList.find(city) == adjacencyList.end())
 	{
-		adjacencyList[city] = list<Edge>();
+		adjacencyList[city] =vector<Edge>();
 
 		if(!isUndo)
 		undoStack.push({ AddCity,city });
@@ -14,18 +14,26 @@ void Graph::addCity(const string& city)
 }
 void Graph::addEdge(const string& source, const string& destination, int distance)
 {
-	addCity(source);
-	addCity(destination);
+	bool addedSource = false, addedDestination = false;
 
-	if (!EdgeExists(source,destination))
-	{
+	if (!cityExists(source)) {
+		addCity(source);
+		addedSource = true;
+	}
+	if (!cityExists(destination)) {
+		addCity(destination);
+		addedDestination = true;
+	}
+
+	if (!EdgeExists(source, destination)) {
 		adjacencyList[source].push_back(Edge(destination, distance));
 		adjacencyList[destination].push_back(Edge(source, distance));
-
-		if(!isUndo)
-		undoStack.push({ AddEdge,source,destination,distance });
+		if (!isUndo) {
+			undoStack.push({ AddEdge, source, destination, distance, {}});
+		}
 	}
 }
+
 void Graph::deleteEdge(const string& source, const string& destination)
 {
 	if (!EdgeExists(source, destination))
@@ -73,18 +81,16 @@ void Graph::deleteEdge(const string& source, const string& destination)
 }
 void Graph::deleteCity(const string& cityToDelete)
 {
-
 	if (!cityExists(cityToDelete))
 	{
 		return;
 	}
 
-	list<Edge>EdgesConnected = adjacencyList[cityToDelete];
+	vector<Edge> EdgesConnected = adjacencyList[cityToDelete];
 
 	for (auto& items : adjacencyList)
 	{
 		const string& connectedCity = items.first;
-
 		if (connectedCity != cityToDelete)
 		{
 			auto& edges = items.second;
@@ -100,15 +106,15 @@ void Graph::deleteCity(const string& cityToDelete)
 				}
 			}
 		}
-
 	}
-	//after deleting edges->delete the city
+
 	adjacencyList.erase(cityToDelete);
 
-	if(!isUndo)
-	undoStack.push({ DeleteCity,cityToDelete,"",0,EdgesConnected });
+	if (!isUndo)
+	{
+		undoStack.push({ DeleteCity, cityToDelete, "", 0, EdgesConnected });
+	}
 }
-
 
 
 bool Graph::cityExists(const string& cityName)
@@ -134,7 +140,7 @@ bool Graph::EdgeExists(const string& source, const string& dest)
 	return false;
 }
 
-unordered_map<string, list<Edge>>& Graph::getAdjacencyList()
+unordered_map<string, vector<Edge>>& Graph::getAdjacencyList()
 {
 	return adjacencyList;
 }
@@ -170,6 +176,7 @@ void Graph::undo()
 	{
 		deleteEdge(lastOp.source, lastOp.destination);
 	}
+
 	else if (lastOp.type == DeleteEdge)
 	{
 		addEdge(lastOp.source, lastOp.destination, lastOp.distance);

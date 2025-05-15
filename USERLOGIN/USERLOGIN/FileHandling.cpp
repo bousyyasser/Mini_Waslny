@@ -110,31 +110,89 @@ Edge Edge::from_json(const rapidjson::Value& obj) {
 Value Graph::to_json(Document::AllocatorType& allocator) const {
     Value graphObj(kObjectType);
 
+    // Serialize adjacency list
+    Value adjacencyListObj(kObjectType);
     for (const auto& pair : adjacencyList) {
         Value cityName(pair.first.c_str(), allocator);
         Value edgesArr(kArrayType);
-
         for (const Edge& edge : pair.second) {
             edgesArr.PushBack(edge.to_json(allocator), allocator);
         }
-
-        graphObj.AddMember(cityName, edgesArr, allocator);
+        adjacencyListObj.AddMember(cityName, edgesArr, allocator);
     }
+    graphObj.AddMember("adjacencyList", adjacencyListObj, allocator);
+
+    // Serialize undoStack
+    Value undoStackArr(kArrayType);
+    stack<LastOperation> tempStack = undoStack; // copy stack
+    while (!tempStack.empty()) {
+        const LastOperation& op = tempStack.top();
+        Value opObj(kObjectType);
+        opObj.AddMember("type", static_cast<int>(op.type), allocator);
+        opObj.AddMember("source", Value(op.source.c_str(), allocator), allocator);
+        opObj.AddMember("destination", Value(op.destination.c_str(), allocator), allocator);
+        opObj.AddMember("distance", op.distance, allocator);
+        Value cityEdgesArr(kArrayType);
+        for (const Edge& edge : op.cityEdges) {
+            cityEdgesArr.PushBack(edge.to_json(allocator), allocator);
+        }
+        opObj.AddMember("cityEdges", cityEdgesArr, allocator);
+        undoStackArr.PushBack(opObj, allocator);
+        tempStack.pop();
+    }
+    graphObj.AddMember("undoStack", undoStackArr, allocator);
+
+    // Serialize isUndo flag
+    graphObj.AddMember("isUndo", isUndo, allocator);
 
     return graphObj;
 }
 
-Graph Graph::from_json(const rapidjson::Value& obj) {
+Graph Graph::from_json(const Value& obj) {
     Graph graph;
 
-    for (auto it = obj.MemberBegin(); it != obj.MemberEnd(); ++it) {
-        std::string city = it->name.GetString();
-        const rapidjson::Value& edgesArr = it->value;
-
-        for (rapidjson::SizeType i = 0; i < edgesArr.Size(); ++i) {
-            Edge edge = Edge::from_json(edgesArr[i]);
-            graph.adjacencyList[city].push_back(edge);
+    // Deserialize adjacencyList
+    if (obj.HasMember("adjacencyList") && obj["adjacencyList"].IsObject()) {
+        const Value& adjList = obj["adjacencyList"];
+        for (auto it = adjList.MemberBegin(); it != adjList.MemberEnd(); ++it) {
+            std::string city = it->name.GetString();
+            const Value& edgesArr = it->value;
+            for (SizeType i = 0; i < edgesArr.Size(); ++i) {
+                Edge edge = Edge::from_json(edgesArr[i]);
+                graph.adjacencyList[city].push_back(edge);
+            }
         }
+    }
+
+    // Deserialize undoStack
+    if (obj.HasMember("undoStack") && obj["undoStack"].IsArray()) {
+        const Value& undoStackArr = obj["undoStack"];
+      //make temp vec to reverse stack 
+        std::vector<LastOperation> tempOps;
+        for (SizeType i = 0; i < undoStackArr.Size(); ++i) {
+            const Value& opObj = undoStackArr[i];
+            LastOperation op;
+            op.type = static_cast<operationType>(opObj["type"].GetInt());
+            op.source = opObj["source"].GetString();
+            op.destination = opObj["destination"].GetString();
+            op.distance = opObj["distance"].GetInt();
+            if (opObj.HasMember("cityEdges") && opObj["cityEdges"].IsArray()) {
+                const Value& cityEdgesArr = opObj["cityEdges"];
+                for (SizeType j = 0; j < cityEdgesArr.Size(); ++j) {
+                    op.cityEdges.push_back(Edge::from_json(cityEdgesArr[j]));
+                }
+            }
+            tempOps.push_back(op);
+        }
+       
+        for (auto it = tempOps.rbegin(); it != tempOps.rend(); ++it) {
+            graph.undoStack.push(*it);
+        }
+    }
+
+    // Deserialize isUndo flag
+    if (obj.HasMember("isUndo") && obj["isUndo"].IsBool()) {
+        graph.isUndo = obj["isUndo"].GetBool();
     }
 
     return graph;
