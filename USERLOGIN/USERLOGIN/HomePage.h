@@ -38,7 +38,7 @@ private slots:
     void showTraversePage();
     void showShortestPathPage();
     void goBack();
-    void logout();
+    
 
     // Graph operations
     void onAddCity();

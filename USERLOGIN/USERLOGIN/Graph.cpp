@@ -22,7 +22,7 @@ void Graph::addEdge(const string& source, const string& destination, int distanc
 	}
 	if (!cityExists(destination)) {
 		addCity(destination);
-		addedDestination = true;
+		addedDestination = true;          
 	}
 
 	if (!EdgeExists(source, destination)) {

@@ -70,9 +70,5 @@ vector<string> GraphTraversal::BFS(const string& startCity)
 			}
 		}
 	}
-
-
-
-
 	return path;
 }

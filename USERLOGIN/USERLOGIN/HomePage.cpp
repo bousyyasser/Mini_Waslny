@@ -5,13 +5,8 @@
 #include "EdgeView.h"
 #include "FileHandling.h"
 #include "GraphTraversal.h"
-
-
-
 void HomePage::setGraph(const Graph& graph)
 {
-
-
     this->graph = graph;
 
     //Update visualization
@@ -121,26 +116,7 @@ void HomePage::setupUI()
     ui.back_2->setStyleSheet(backBtnsStyle);
     ui.back_3->setStyleSheet(backBtnsStyle);
 
-    // Style logout button
-    ui.logoutButton->setStyleSheet(R"(
-        QPushButton {
-            background-color: #4d4d4d;
-            color: white;
-            font-weight: bold;
-            font-size: 12px;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 10px;
-            min-width: 0px;
-            min-height: 20px;
-        }
-        QPushButton:hover {
-            background-color: #6e6e6e;
-        }
-        QPushButton:pressed {
-            background-color: #3a3a3a;
-        }
-    )");
+  
 
     // Add/Edit Graph button styles
     QString addDeleteButtonStyle = R"(
@@ -339,7 +315,7 @@ void HomePage::setUpConnections()
     connect(ui.back, &QPushButton::clicked, this, &HomePage::goBack);
     connect(ui.back_2, &QPushButton::clicked, this, &HomePage::goBack);
     connect(ui.back_3, &QPushButton::clicked, this, &HomePage::goBack);
-    connect(ui.logoutButton, &QPushButton::clicked, this, &HomePage::logout);
+   
   
     connect(ui.addCityBtn, &QPushButton::clicked, this, &HomePage::onAddCity);
     connect(ui.addEdgeBtn, &QPushButton::clicked, this, &HomePage::onAddEdge);
@@ -365,7 +341,7 @@ void HomePage::setupShortestPathUI()
 
     
     shortestPathOutputDisplay = new QTextEdit();
-    shortestPathOutputDisplay->setReadOnly(true);
+    shortestPathOutputDisplay->setReadOnly(true);  
     shortestPathOutputDisplay->setStyleSheet(R"(
         background-color: white;
         border: 2px solid #d1d1d1;
@@ -1349,52 +1325,55 @@ void HomePage::onRunBFS()
         showAlert("Error", "Graph is empty! Add cities first.", QMessageBox::Warning);
         return;
     }
-
     QStringList cities;
     for (const auto& cityPair : adjList) {
         cities << QString::fromStdString(cityPair.first);
     }
-
     bool ok;
     QString startCity = QInputDialog::getItem(this, "BFS Input", "Select start city:", cities, 0, false, &ok);
     if (!ok || startCity.isEmpty()) {
         showAlert("Error", "No start city selected!", QMessageBox::Warning);
         return;
     }
-
     resetTraversalNodeColors(traverseScene);
 
-   
     traversalOutputDisplay->clear();
-
-   vector<string> path = traversal->BFS(startCity.toStdString());
+    vector<string> path = traversal->BFS(startCity.toStdString());
     if (path.empty()) {
         showAlert("No Path", "No path exists between the cities!", QMessageBox::Warning);
         return;
     }
 
-    
+    double totalDistance = 0.0;
+    for  (int i = 0; i < static_cast<int>(path.size()) - 1; i++) {
+       
+        const auto& neighbors = adjList.at(path[i]);
+        for (const auto& edge : neighbors) {
+            if (edge.destination == path[i + 1]) {
+                totalDistance += edge.distance;
+                break;
+            }
+        }
+    }
+
     traversalOutputDisplay->setFontPointSize(12);
     traversalOutputDisplay->append("BFS Traversal");
     traversalOutputDisplay->append("----------------");
     traversalOutputDisplay->append("Starting from: " + startCity);
     traversalOutputDisplay->append("");
-
     int step = 1;
     for (const auto& city : path) {
         QString qCity = QString::fromStdString(city);
 
-       
         traversalOutputDisplay->append(QString("%1. %2").arg(step++).arg(qCity));
         QApplication::processEvents();
-
         highlightTraversalNode(qCity, traverseScene, QColor(173, 216, 230));
     }
-
     traversalOutputDisplay->append("");
+    traversalOutputDisplay->append(QString("Total Distance: %1 units").arg(totalDistance));
     traversalOutputDisplay->append("BFS Traversal complete");
-
 }
+
 void HomePage::onRunDFS()
 {
     auto adjList = graph.getAdjacencyList();
@@ -1417,34 +1396,43 @@ void HomePage::onRunDFS()
 
     resetTraversalNodeColors(traverseScene);
 
-    
     traversalOutputDisplay->clear();
 
     vector<string> path = traversal->DFS(startCity.toStdString());
 
-    
+    // Calculate total distance
+    double totalDistance = 0.0;
+    // Use int instead of size_t to avoid conversion warnings
+    for (int i = 0; i < static_cast<int>(path.size()) - 1; i++) {
+        // Find edge between consecutive cities in the path
+        const auto& neighbors = adjList.at(path[i]);
+        for (const auto& edge : neighbors) {
+            if (edge.destination == path[i + 1]) {
+                totalDistance += edge.distance;
+                break;
+            }
+        }
+    }
+
     traversalOutputDisplay->setFontPointSize(12);
     traversalOutputDisplay->append("DFS Traversal");
     traversalOutputDisplay->append("----------------");
     traversalOutputDisplay->append("Starting from: " + startCity);
     traversalOutputDisplay->append("");
 
-    
     int step = 1;
     for (const auto& city : path) {
         QString qCity = QString::fromStdString(city);
 
-        
         traversalOutputDisplay->append(QString("%1. %2").arg(step++).arg(qCity));
         QApplication::processEvents();
 
-       
         highlightTraversalNode(qCity, traverseScene, QColor(144, 238, 144));
     }
 
     traversalOutputDisplay->append("");
-    traversalOutputDisplay->append(" DFS Traversal complete");
-
+    traversalOutputDisplay->append(QString("Total Distance: %1 units").arg(totalDistance));
+    traversalOutputDisplay->append("DFS Traversal complete");
 }
 void HomePage::highlightTraversalNode(const QString& cityName, QGraphicsScene* scene, QColor targetColor)
 {
@@ -1908,25 +1896,7 @@ void HomePage::showAlert(const QString& title, const QString& message, QMessageB
 
     msgBox.exec();
 }
-void HomePage::logout()
-{
-   
-    USERLOGIN* loginWindow = new USERLOGIN();
-    loginWindow->setgraph(this->graph);
 
-    FileHandling fh;
-    QString userFilename = "Files/users.json";
-    QString graphFilename = "Files/graph.json";
-
-    User currentUser;
-
-   fh.saveAll(userFilename, graphFilename, currentUser, this->graph);
-
-    
-    loginWindow->show();
-    this->close();
-  
-}
 
 HomePage::~HomePage()
 {

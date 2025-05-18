@@ -46,29 +46,7 @@ void ShortestPath::dijkstra(const string& source, const string& destination)
 
 	}
 }
-void ShortestPath::displayShortestPath(const string& target)
-{
-	if (dist.find(target) == dist.end() || dist[target] == MAXDIST)
-	{
-		return void(cout << "Can't reach this destination." << endl);
-	}
 
-	stack<string>path;
-	string current = target;
-
-	while (!current.empty())
-	{
-		path.push(current);
-		current = parent[current];
-	}
-
-	while (!path.empty())
-	{
-		cout << path.top() << " ";
-		path.pop();
-	}
-	cout << '\n';
-}
 int ShortestPath::getDist(const string& destination) const 
 {
 	auto it = dist.find(destination);
@@ -77,6 +55,35 @@ int ShortestPath::getDist(const string& destination) const
 	}
 	return MAXDIST;
 }
+
+void ShortestPath::displayShortestPath(const string& target)
+{
+    if (dist.find(target) == dist.end() || dist[target] == MAXDIST)
+    {
+        return void(cout << "Can't reach this destination." << endl);
+    }
+
+    stack<string> path;
+    string current = target;
+
+    while (!current.empty())
+    {
+        path.push(current);
+        current = parent[current];
+    }
+
+    cout << "Shortest Path: ";
+    while (!path.empty())
+    {
+        cout << path.top();
+        path.pop();
+        if (!path.empty()) cout << " -> ";
+    }
+    
+    
+    cout << "\nTotal Distance: " << dist[target] << endl;
+}
+
 string ShortestPath::getParent(const string& node) const {
 	auto it = parent.find(node);
 	if (it != parent.end()) {

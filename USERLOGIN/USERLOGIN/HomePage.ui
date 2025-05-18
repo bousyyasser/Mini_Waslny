@@ -1,401 +1,348 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<class>HomePageClass</class>
-<widget class="QMainWindow" name="HomePageClass">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>1200</width>
-<height>700</height>
-</rect>
-</property>
-<property name="windowTitle">
-<string>HomePage</string>
-</property>
-<widget class="QWidget" name="centralWidget">
-<widget class="QWidget" name="leftPanel" native="true">
-<property name="enabled">
-<bool>true</bool>
-</property>
-<property name="geometry">
-<rect>
-<x>-1</x>
-<y>-10</y>
-<width>201</width>
-<height>711</height>
-</rect>
-</property>
-<widget class="QWidget" name="verticalLayoutWidget">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>10</y>
-<width>211</width>
-<height>701</height>
-</rect>
-</property>
-<layout class="QVBoxLayout" name="verticalLayout">
-<item>
-<widget class="QPushButton" name="homeButton">
-<property name="text">
-	<string>Home</string>
-</property>
-</widget>
-</item>
-<item>
-<widget class="QPushButton" name="addGraphButton">
-<property name="text">
-	<string>Add Graph</string>
-</property>
-</widget>
-</item>
-<item>
-<widget class="QPushButton" name="traverseButton">
-<property name="text">
-	<string>Traverse Graph</string>
-</property>
-</widget>
-</item>
-<item>
-<widget class="QPushButton" name="shortestPathButton">
-<property name="text">
-	<string>Shortest Path</string>
-</property>
-</widget>
-</item>
-<item>
-<layout class="QHBoxLayout" name="logoutLayout">
-<property name="leftMargin">
-	<number>0</number>
-</property>
-<item>
-	<spacer name="horizontalSpacer_left">
-		<property name="orientation">
-			<enum>Qt::Horizontal</enum>
-		</property>
-		<property name="sizeHint" stdset="0">
-			<size>
-				<width>40</width>
-				<height>20</height>
-			</size>
-		</property>
-	</spacer>
-</item>
-<item>
-	<widget class="QPushButton" name="logoutButton">
-		<property name="sizePolicy">
-			<sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-				<horstretch>0</horstretch>
-				<verstretch>0</verstretch>
-			</sizepolicy>
-		</property>
-		<property name="minimumSize">
-			<size>
-				<width>130</width>
-				<height>40</height>
-			</size>
-		</property>
-		<property name="text">
-			<string>Logout</string>
-		</property>
-	</widget>
-</item>
-<item>
-	<spacer name="horizontalSpacer_right">
-		<property name="orientation">
-			<enum>Qt::Horizontal</enum>
-		</property>
-		<property name="sizeHint" stdset="0">
-			<size>
-				<width>40</width>
-				<height>20</height>
-			</size>
-		</property>
-	</spacer>
-</item>
-</layout>
-</item>
-</layout>
-</widget>
-</widget>
-<widget class="QStackedWidget" name="rightPanel">
-<property name="geometry">
-<rect>
-<x>200</x>
-<y>-20</y>
-<width>1000</width>
-<height>720</height>
-</rect>
-</property>
-<widget class="QWidget" name="HomePageWidget">
-<widget class="QLabel" name="welcomeLabel">
-<property name="geometry">
-<rect>
-<x>30</x>
-<y>30</y>
-<width>381</width>
-<height>60</height>
-</rect>
-</property>
-<property name="text">
-<string/>
-</property>
-<property name="alignment">
-<set>Qt::AlignmentFlag::AlignCenter</set>
-</property>
-</widget>
-<widget class="QFrame" name="frame">
-<property name="geometry">
-<rect>
-<x>20</x>
-<y>130</y>
-<width>781</width>
-<height>491</height>
-</rect>
-</property>
-<property name="frameShape">
-<enum>QFrame::Shape::StyledPanel</enum>
-</property>
-<property name="frameShadow">
-<enum>QFrame::Shadow::Raised</enum>
-</property>
-<widget class="QLabel" name="desLabel">
-<property name="geometry">
-<rect>
-	<x>10</x>
-	<y>10</y>
-	<width>761</width>
-	<height>471</height>
-</rect>
-</property>
-<property name="text">
-<string/>
-</property>
-</widget>
-</widget>
-</widget>
-<widget class="QWidget" name="TraverseWidget">
-<widget class="QPushButton" name="back_2">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>120</width>
-<height>60</height>
-</rect>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/back.png</normaloff>images/back.png
-</iconset>
-</property>
-</widget>
-<widget class="GraphView" name="TraverseGraphView">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>-20</y>
-<width>901</width>
-<height>771</height>
-</rect>
-</property>
-</widget>
-<widget class="QPushButton" name="DFS_button">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>200</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>DFS</string>
-</property>
-</widget>
-<widget class="QPushButton" name="BFS_button">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>260</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>BFS</string>
-</property>
-</widget>
-</widget>
-<widget class="QWidget" name="ShortestPathWidget">
-<widget class="QPushButton" name="back_3">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/back.png</normaloff>images/back.png
-</iconset>
-</property>
-</widget>
-<widget class="GraphView" name="shortestPathGraphView">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>871</width>
-<height>731</height>
-</rect>
-</property>
-</widget>
-<widget class="QPushButton" name="dijkstra_btn">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>300</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Start Dijkstra</string>
-</property>
-</widget>
-</widget>
-<widget class="QWidget" name="addGraphWidget">
-<widget class="QPushButton" name="back">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>120</width>
-<height>60</height>
-</rect>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/back.png</normaloff>images/back.png
-</iconset>
-</property>
-</widget>
-<widget class="GraphView" name="graphView">
-<property name="geometry">
-<rect>
-<x>0</x>
-<y>0</y>
-<width>881</width>
-<height>731</height>
-</rect>
-</property>
-</widget>
-<widget class="QPushButton" name="addCityBtn">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>60</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Add City</string>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/add.png</normaloff>images/add.png
-</iconset>
-</property>
-</widget>
-<widget class="QPushButton" name="addEdgeBtn">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>120</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Add Edge</string>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/add.png</normaloff>images/add.png
-</iconset>
-</property>
-</widget>
-<widget class="QPushButton" name="deleteCityBtn">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>180</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Delete City</string>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/delete.png</normaloff>images/delete.png
-</iconset>
-</property>
-</widget>
-<widget class="QPushButton" name="deleteEdgeBtn">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>240</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Delete Edge</string>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/delete.png</normaloff>images/delete.png
-</iconset>
-</property>
-</widget>
-<widget class="QPushButton" name="undoButton">
-<property name="geometry">
-<rect>
-<x>870</x>
-<y>300</y>
-<width>130</width>
-<height>50</height>
-</rect>
-</property>
-<property name="text">
-<string>Undo</string>
-</property>
-<property name="icon">
-<iconset>
-<normaloff>images/undo.png</normaloff>images/undo.png
-</iconset>
-</property>
-</widget>
-</widget>
-</widget>
-</widget>
-</widget>
-<layoutdefault spacing="6" margin="11"/>
-<customwidgets>
-<customwidget>
-<class>GraphView</class>
-<extends>QGraphicsView</extends>
-<header>graphview.h</header>
-</customwidget>
-</customwidgets>
-<resources/>
-<connections/>
+ <class>HomePageClass</class>
+ <widget class="QMainWindow" name="HomePageClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>HomePage</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="leftPanel" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>-10</y>
+      <width>201</width>
+      <height>711</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>211</width>
+       <height>701</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="homeButton">
+        <property name="text">
+         <string>Home</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addGraphButton">
+        <property name="text">
+         <string>Add Graph</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="traverseButton">
+        <property name="text">
+         <string>Traverse Graph</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="shortestPathButton">
+        <property name="text">
+         <string>Shortest Path</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="logoutLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QStackedWidget" name="rightPanel">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>-20</y>
+      <width>1000</width>
+      <height>720</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="HomePageWidget">
+     <widget class="QLabel" name="welcomeLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>381</width>
+        <height>60</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>130</y>
+        <width>781</width>
+        <height>491</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Raised</enum>
+      </property>
+      <widget class="QLabel" name="desLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>761</width>
+         <height>471</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="TraverseWidget">
+     <widget class="QPushButton" name="back_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>120</width>
+        <height>60</height>
+       </rect>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/back.png</normaloff>images/back.png</iconset>
+      </property>
+     </widget>
+     <widget class="GraphView" name="TraverseGraphView">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>-20</y>
+        <width>901</width>
+        <height>771</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="DFS_button">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>200</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>DFS</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="BFS_button">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>260</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>BFS</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="ShortestPathWidget">
+     <widget class="QPushButton" name="back_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/back.png</normaloff>images/back.png</iconset>
+      </property>
+     </widget>
+     <widget class="GraphView" name="shortestPathGraphView">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>871</width>
+        <height>731</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="dijkstra_btn">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>300</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Start Dijkstra</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="addGraphWidget">
+     <widget class="QPushButton" name="back">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>120</width>
+        <height>60</height>
+       </rect>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/back.png</normaloff>images/back.png</iconset>
+      </property>
+     </widget>
+     <widget class="GraphView" name="graphView">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>881</width>
+        <height>731</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addCityBtn">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>60</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add City</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/add.png</normaloff>images/add.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="addEdgeBtn">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>120</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add Edge</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/add.png</normaloff>images/add.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="deleteCityBtn">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>180</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete City</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/delete.png</normaloff>images/delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="deleteEdgeBtn">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>240</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Delete Edge</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/delete.png</normaloff>images/delete.png</iconset>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="undoButton">
+      <property name="geometry">
+       <rect>
+        <x>870</x>
+        <y>300</y>
+        <width>130</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Undo</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>images/undo.png</normaloff>images/undo.png</iconset>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GraphView</class>
+   <extends>QGraphicsView</extends>
+   <header>graphview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
 </ui>
