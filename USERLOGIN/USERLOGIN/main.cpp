@@ -1,20 +1,22 @@
 #include "USERLOGIN.h"
 #include "FileHandling.h"
 #include <QtWidgets/QApplication>
+#include <QDir>
+
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    // file handling
+    // File handling
     User loadedUser;
     Graph loadedGraph;
     FileHandling fileHandler;
     QString userFilename = "Files/users.json";
     QString graphFilename = "Files/graph.json";
-    // check directory exists
+    // Check directory exists
     if (!fileHandler.directoryExists("Files")) {
         fileHandler.createDirectory("Files");
     }
-   
+
     fileHandler.loadAll(userFilename, graphFilename, loadedUser, loadedGraph);
     // GUI setup 
     a.setWindowIcon(QIcon(":/images/icon.png"));
@@ -26,10 +28,8 @@ int main(int argc, char* argv[])
     w.show();
     int res = a.exec();
 
-
-
-    w.getuser(loadedUser); 
-    loadedGraph = w.getgraph(); 
+    w.getuser(loadedUser);
+    loadedGraph = w.getgraph();
     fileHandler.saveAll(userFilename, graphFilename, loadedUser, loadedGraph);
     return res;
 }

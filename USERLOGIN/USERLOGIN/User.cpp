@@ -2,7 +2,6 @@
 
 User::User()
 {
-	users.append(qMakePair("bb", "123"));
 }
 
 bool User::loginAuthen(const QString& username, const QString& password)

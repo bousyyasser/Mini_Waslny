@@ -22,7 +22,6 @@ public:
     void setuser(const User& user) { this->user = user; }
     void getuser(User& user) { user = this->user; }
 
-    // Modified method to preserve the undo history
     void setgraph(const Graph& graph)
     {
         this->tempGraph = graph;

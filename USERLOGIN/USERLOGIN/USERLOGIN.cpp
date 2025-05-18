@@ -18,7 +18,6 @@ USERLOGIN::~USERLOGIN()
 
 void USERLOGIN::setupUI()
 {
-
     ui->loginContainer->raise();
     ui->usernameLineEdit->raise();
     ui->passwordLineEdit->raise();
@@ -26,11 +25,9 @@ void USERLOGIN::setupUI()
     ui->statusLabel->raise();
     ui->titleLabel->raise();
 
-
     ui->usernameLineEdit->setPlaceholderText("Enter Username");
     ui->passwordLineEdit->setPlaceholderText("Enter Password");
     ui->passwordLineEdit->setEchoMode(QLineEdit::Password);
-
 
     ui->titleLabel->setStyleSheet(R"(
         QLabel {
@@ -44,7 +41,6 @@ void USERLOGIN::setupUI()
         }
     )");
 
-
     ui->widget->setStyleSheet(R"(
         #widget {
             background-image: url(:/images/bg.jpg);
@@ -57,7 +53,6 @@ void USERLOGIN::setupUI()
         }
     )");
 
-
     ui->loginContainer->setStyleSheet(R"(
         QWidget {
             background-color: rgba(255, 255, 255, 0.98);
@@ -66,7 +61,6 @@ void USERLOGIN::setupUI()
             background-position: center;
         }
     )");
-
 
     QString inputStyle = R"(
         QLineEdit {
@@ -87,7 +81,6 @@ void USERLOGIN::setupUI()
 
     ui->usernameLineEdit->setStyleSheet(inputStyle);
     ui->passwordLineEdit->setStyleSheet(inputStyle);
-
 
     ui->loginButton->setStyleSheet(R"(
         QPushButton {
@@ -116,7 +109,6 @@ void USERLOGIN::on_loginButton_clicked()
     QString username = ui->usernameLineEdit->text().trimmed();
     QString password = ui->passwordLineEdit->text().trimmed();
 
-
     ui->loginButton->setEnabled(false);
 
     if (username.isEmpty() || password.isEmpty()) {
@@ -127,11 +119,10 @@ void USERLOGIN::on_loginButton_clicked()
 
     handleLogin(username, password);
 }
+
 void USERLOGIN::handleLogin(const QString& username, const QString& password)
 {
-
     if (user.isUserExist(username)) {
-
         if (user.loginAuthen(username, password)) {
             showStatus("Login Successfully!", "green");
             QTimer::singleShot(1000, this, [this, username]() {
@@ -143,7 +134,7 @@ void USERLOGIN::handleLogin(const QString& username, const QString& password)
         }
         else {
             showStatus("Wrong password for existing user.", "red");
-            QTimer::singleShot(3600, this, [this]() {
+            QTimer::singleShot( 3600, this, [this, username]() {
                 ui->statusLabel->clear();
                 });
             ui->loginButton->setEnabled(true);
@@ -152,10 +143,9 @@ void USERLOGIN::handleLogin(const QString& username, const QString& password)
     else {
         user.addUser(username, password);
         showStatus("User Registered and Logged in Successfully!", "green");
-
         QTimer::singleShot(1000, this, [this, username]() {
             homePage = new HomePage(username);
-            homePage->setGraph(tempGraph);
+            homePage->setGraph(tempGraph); 
             homePage->show();
             this->hide();
             });
@@ -206,4 +196,3 @@ void USERLOGIN::showStatus(const QString& message, const QString& color)
             "padding: 5px; border-radius: 5px;").arg(color));
     ui->statusLabel->setText(message);
 }
-

@@ -4,7 +4,7 @@
 void Graph::addCity(const string& city)
 {
 
-	if (adjacencyList.find(city) == adjacencyList.end())
+	if (!cityExists(city))
 	{
 		adjacencyList[city] =vector<Edge>();
 

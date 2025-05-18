@@ -70,7 +70,7 @@ private:
     QPushButton* resetPathButton;
     Graph graph;
     GraphTraversal* traversal;
-
+    QString currentUsername;
 
 
 

@@ -3,6 +3,7 @@
 #include "GraphView.h"
 #include "Graph.h"
 #include "EdgeView.h"
+#include "FileHandling.h"
 #include "GraphTraversal.h"
 
 
@@ -69,6 +70,7 @@ HomePage::HomePage(QString username, QWidget* parent)
     );
 }
 
+/*setup functions*/
 void HomePage::setupUI()
 {
     // Set left panel style
@@ -432,8 +434,7 @@ void HomePage::setupShortestPathUI()
     ui.ShortestPathWidget->setLayout(shortestPathPageLayout);
 }
 
-
-/*visualization on add graph*/
+/*setup graph scenes*/
 void HomePage::setUpGraphScene()
 {
     scene = new QGraphicsScene(this);
@@ -483,7 +484,6 @@ void HomePage::showShortestPathPage()
     ui.back_3->show();
     ui.back_3->raise();
 }
-
 
 /*Return Home*/
 void HomePage::goBack()
@@ -1731,7 +1731,7 @@ void HomePage::onRunDijkstra()
 
    
     shortestPathOutputDisplay->verticalScrollBar()->setValue(
-        shortestPathOutputDisplay->verticalScrollBar()->maximum());
+    shortestPathOutputDisplay->verticalScrollBar()->maximum());
 }
 QStringList HomePage::getGraphCities()
 {
@@ -1912,9 +1912,20 @@ void HomePage::logout()
 {
    
     USERLOGIN* loginWindow = new USERLOGIN();
-    loginWindow->setWindowFlags(Qt::Window);
+    loginWindow->setgraph(this->graph);
+
+    FileHandling fh;
+    QString userFilename = "Files/users.json";
+    QString graphFilename = "Files/graph.json";
+
+    User currentUser;
+
+   fh.saveAll(userFilename, graphFilename, currentUser, this->graph);
+
+    
     loginWindow->show();
     this->close();
+  
 }
 
 HomePage::~HomePage()
