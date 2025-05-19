@@ -14,15 +14,15 @@ void Graph::addCity(const string& city)
 }
 void Graph::addEdge(const string& source, const string& destination, int distance)
 {
-	bool addedSource = false, addedDestination = false;
+	
 
 	if (!cityExists(source)) {
 		addCity(source);
-		addedSource = true;
+		
 	}
 	if (!cityExists(destination)) {
 		addCity(destination);
-		addedDestination = true;          
+		       
 	}
 
 	if (!EdgeExists(source, destination)) {
@@ -40,6 +40,7 @@ void Graph::deleteEdge(const string& source, const string& destination)
 	{
 		return;
 	}
+
 	int dist = -1;
 	for (const auto& edge : adjacencyList[source])
 	{
@@ -156,7 +157,7 @@ void Graph::undo()
 	isUndo = true;
 	LastOperation lastOp = undoStack.top();
 	undoStack.pop();
-	
+
 
 	if (lastOp.type == AddCity)
 	{
@@ -167,11 +168,12 @@ void Graph::undo()
 		addCity(lastOp.source);
 		for (const auto& edge : lastOp.cityEdges)
 		{
-			adjacencyList[lastOp.source].push_back(Edge(lastOp.destination, lastOp.distance));
-			adjacencyList[lastOp.destination].push_back(Edge(lastOp.source, lastOp.distance));
+			adjacencyList[lastOp.source].push_back(edge);
+			adjacencyList[edge.destination].push_back(Edge(lastOp.source, edge.distance));
 
 		}
 	}
+
 	else if (lastOp.type == AddEdge)
 	{
 		deleteEdge(lastOp.source, lastOp.destination);

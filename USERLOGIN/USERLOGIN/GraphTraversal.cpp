@@ -25,6 +25,7 @@ vector<string>GraphTraversal::DFS(const string& startCity)
 			visited[node] = true;
 			path.push_back(node);
 
+
 			const auto& neighbours = graph.getAdjacencyList().at(node);
 			for (auto it = neighbours.rbegin(); it != neighbours.rend(); ++it)
 			{

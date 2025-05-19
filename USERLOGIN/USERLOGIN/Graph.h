@@ -5,8 +5,7 @@
 #include <vector>
 #include <stack>
 #include <list>
-#include "Edge.h"
-
+#include "Edge.h" 
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
